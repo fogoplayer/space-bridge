@@ -1,24 +1,5 @@
 # Isomorphic Functions
 
-## init
-```typescript
-init({
-  baseUrl: string
-})
-```
-Initial setup for SpaceBridge.
-
-### Parameters
-`baseUrl` - the base URL of the server where remote requests should be routed to
-
-### Returns
-void
-
-### Throws
-none
-
----
-
 ## define
 ```typescript
 define(func: Function): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
@@ -43,9 +24,24 @@ A promise that resolves to the return value of `func`
 ### Throws
 SpaceBridgeCollisionError - The name of the function being added has already been registered with SpaceBridge
 
----
-
 # Client-side methods
+
+## init
+```typescript
+init({
+  baseUrl: string
+})
+```
+Initial setup for SpaceBridge.
+
+### Parameters
+`baseUrl` - the base URL of the server where remote requests should be routed to
+
+### Returns
+void
+
+### Throws
+none
 
 ## lazy
 ```typescript
@@ -64,8 +60,6 @@ An object where the keys are the values of methods and members. The values for m
 SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
 SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
 
----
-
 ## queue
 ```ts
 queue(args: Parameters<typeof fetch>): void
@@ -82,3 +76,21 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 
 ### Throws
 `AbortError`, `TypeError` - see the [fetch documentation](https://developer.mozilla.org/en-US/docs/Web/API/fetch) for details
+
+## Server-side Methods
+
+## spacebridge
+```ts
+spacebridge(...modules: string[]): (req, res, next) => void
+```
+
+Express middleware that generates an API signature for your methods. 
+
+### Parameters
+Each argument is a string of a module to import. Using the `define` method in those modules registers them with SpaceBridge and allows them to create an API.
+
+### Returns 
+An Express middleware function
+
+### Throws
+**TODO**
