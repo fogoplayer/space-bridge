@@ -61,4 +61,24 @@ Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the meth
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method. The values for members are promises that resolve to the value of the member.
 
 ### Throws
+SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
 SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
+
+---
+
+## queue
+```ts
+queue(args: Parameters<typeof fetch>): void
+```
+
+A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API](https://developer.mozilla.org/en-US/docs/Web/API/Background_Synchronization_API) where possible. Where the API is unavailable (due to browser support, execution outside of a PWA, or any other limitation) the `fetch` API is used.
+
+### Parameters
+`resource` - the URL to fetch against
+`options` - the fetch options object
+
+### Returns
+`response` - a Promise that resolves to a Response object. If the request has been deferred until a background sync, it will **TODO what will it do?**
+
+### Throws
+`AbortError`, `TypeError` - see the [fetch documentation](https://developer.mozilla.org/en-US/docs/Web/API/fetch) for details
