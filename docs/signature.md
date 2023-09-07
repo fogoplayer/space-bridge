@@ -19,7 +19,7 @@ console.log(sum); // 4
 
 #### Parameters
 `func` - the user-defined function to be wrapped in SpaceBridge logic
-`options` - users can override global preferences by passing in a new options object. **TODO do we merge the two, or is it just an overwrite? If we merge it, we probably need an "unset" keyword or something.**
+`options` - users can override global preferences by passing in a new options object. _TODO do we merge the two, or is it just an overwrite? If we merge it, we probably need an "unset" keyword or something._
 
 #### Returns
 A promise that resolves to the return value of `func`
@@ -79,7 +79,7 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 `options` - the fetch options object
 
 #### Returns
-`response` - a Promise that resolves to a Response object. If the request has been deferred until a background sync, it will **TODO what will it do?**
+`response` - a Promise that resolves to a Response object. If the request has been deferred until a background sync, it will _TODO what will it do?_
 
 #### Throws
 `AbortError`, `TypeError` - see the [fetch documentation](https://developer.mozilla.org/en-US/docs/Web/API/fetch) for details
@@ -100,4 +100,4 @@ Each argument is a string of a module to import. Using the `define` method in th
 An Express middleware function
 
 #### Throws
-**TODO**
+_TODO_
