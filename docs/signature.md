@@ -4,7 +4,7 @@
 
 ### define
 ```ts
-define(func: Function): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
+define(func: Function, options?: {InitOptions}): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
 ```
 A higher-order function that wraps your function definitions so that they can use SpaceBridge logic. It is isomorphic, so you can use define in your modules pre-export and the correct logic will be loaded in each environment. It returns a function that returns a promise, and that promise resolves to the return value of your function. For example:
 
@@ -19,6 +19,7 @@ console.log(sum); // 4
 
 #### Parameters
 `func` - the user-defined function to be wrapped in SpaceBridge logic
+`options` - users can override global preferences by passing in a new options object. **TODO do we merge the two, or is it just an overwrite? If we merge it, we probably need an "unset" keyword or something.**
 
 #### Returns
 A promise that resolves to the return value of `func`
