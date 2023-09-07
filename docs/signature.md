@@ -10,12 +10,16 @@ A higher-order function that wraps your function definitions so that they can us
 
 ```ts
 // arithmetic.mjs
-export const add = define((num1: number, num2: number): number => num1 + num2); // TODO this function is anonymous
+export const add = define(function add(num1: number, num2: number): number { num1 + num2}); // TODO is there a way to avoid naming it twice?
 
 // app.js
 const sum = await add(1, 3);
 console.log(sum); // 4
 ```
+
+Asynchronous methods passed into `define` get awaited, meaning that when the defined function's promise resolves, it will resolve to the return value of the function, not another promise.
+
+Because SpaceBridge's API uses the function name to connect functionality on the client and on the server, `define` checks that each function passed in has a unique name
 
 #### Parameters
 `func` - the user-defined function to be wrapped in SpaceBridge logic
@@ -61,7 +65,7 @@ Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the meth
 `signature` - an object describing the methods and members being imported
 
 #### Returns
-An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method. The values for members are promises that resolve to the value of the member.
+An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
 
 #### Throws
 SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
@@ -91,7 +95,8 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 spacebridge(...modules: string[]): (req, res, next) => void
 ```
 
-Express middleware that generates an API signature for your methods. 
+Express middleware that generates an API signature for your methods. It creates a unique URL for each method, based on the name. It also generates a GET endpoint with a mapping of URLs to function names. 
+Under the hood, SpaceBridge is making POST requests to these endpoints to call these methods and a GET request to get diagnostic information (such as typical response time) about the endpoint, and a PUT request to provide diagnostic information (such as the response time for that client).
 
 #### Parameters
 Each argument is a string of a module to import. Using the `define` method in those modules registers them with SpaceBridge and allows them to create an API.
