@@ -27,7 +27,7 @@ Because SpaceBridge's API uses the function name to connect functionality on the
 `options` - users can override global preferences by passing in a new options object. _TODO do we merge the two, or is it just an overwrite? If we merge it, we probably need an "unset" keyword or something._
 
 #### Returns
-A promise that resolves to the return value of `func`
+A function that returns a promise that resolves to the return value of `func`
 
 #### Throws
 SpaceBridgeCollisionError - The name of the function being added has already been registered with SpaceBridge
