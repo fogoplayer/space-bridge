@@ -1,12 +1,12 @@
 # Isomorphic Functions
 
 ## define
-```typescript
+```ts
 define(func: Function): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
 ```
 A higher-order function that wraps your function definitions so that they can use SpaceBridge logic. It is isomorphic, so you can use define in your modules pre-export and the correct logic will be loaded in each environment. It returns a function that returns a promise, and that promise resolves to the return value of your function. For example:
 
-```typescript
+```ts
 // arithmetic.mjs
 export const add = define((num1: number, num2: number): number => num1 + num2); // TODO this function is anonymous
 
@@ -27,7 +27,7 @@ SpaceBridgeCollisionError - The name of the function being added has already bee
 # Client-side methods
 
 ## init
-```typescript
+```ts
 init({
   baseUrl: string
 })
@@ -44,7 +44,7 @@ void
 none
 
 ## lazy
-```typescript
+```ts
 lazy(url: string, signature?: { methods?: string[], members?: string[] }): { typeof members[number]: Promise<any>; typeof methods[number]: (...any) => Promise<any> } 
 ```
 Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the methods are immediately callable. If the method is called before the code is finished loading, SpaceBridge executes the function remotely and returns a value. This makes it ideal for very large libraries, allowing for immediate responsiveness while the code is loaded in the background.
