@@ -1,6 +1,8 @@
-# Isomorphic Functions
+# API Signature
 
-## define
+## Isomorphic Functions
+
+### define
 ```ts
 define(func: Function): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
 ```
@@ -15,82 +17,86 @@ const sum = await add(1, 3);
 console.log(sum); // 4
 ```
 
-### Parameters
+#### Parameters
 `func` - the user-defined function to be wrapped in SpaceBridge logic
 
-### Returns
+#### Returns
 A promise that resolves to the return value of `func`
 
-### Throws
+#### Throws
 SpaceBridgeCollisionError - The name of the function being added has already been registered with SpaceBridge
 
-# Client-side methods
+## Client-side methods
 
-## init
+### init
 ```ts
 init({
   baseUrl: string
+  weights: {
+    [key: Factor]: number
+  }
 })
 ```
 Initial setup for SpaceBridge.
 
-### Parameters
+#### Parameters
 `baseUrl` - the base URL of the server where remote requests should be routed to
+`weights` - the relative weight that should be given to each factor. Default for each factor is 1 if no weights are specified or the average of the specified weights if only some are not specified.
 
-### Returns
+#### Returns
 void
 
-### Throws
+#### Throws
 none
 
-## lazy
+### lazy
 ```ts
 lazy(url: string, signature?: { methods?: string[], members?: string[] }): { typeof members[number]: Promise<any>; typeof methods[number]: (...any) => Promise<any> } 
 ```
 Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the methods are immediately callable. If the method is called before the code is finished loading, SpaceBridge executes the function remotely and returns a value. This makes it ideal for very large libraries, allowing for immediate responsiveness while the code is loaded in the background.
 
-### Parameters
+#### Parameters
 `url` - the URL to import from
 `signature` - an object describing the methods and members being imported
 
-### Returns
+#### Returns
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method. The values for members are promises that resolve to the value of the member.
 
-### Throws
+#### Throws
 SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
 SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
 
-## queue
+### queue
 ```ts
 queue(args: Parameters<typeof fetch>): void
 ```
 
 A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API](https://developer.mozilla.org/en-US/docs/Web/API/Background_Synchronization_API) where possible. Where the API is unavailable (due to browser support, execution outside of a PWA, or any other limitation) the `fetch` API is used.
 
-### Parameters
+#### Parameters
 `resource` - the URL to fetch against
 `options` - the fetch options object
 
-### Returns
+#### Returns
 `response` - a Promise that resolves to a Response object. If the request has been deferred until a background sync, it will **TODO what will it do?**
 
-### Throws
+#### Throws
 `AbortError`, `TypeError` - see the [fetch documentation](https://developer.mozilla.org/en-US/docs/Web/API/fetch) for details
 
-## Server-side Methods
+### Server-side Methods
 
-## spacebridge
+### spacebridge
 ```ts
 spacebridge(...modules: string[]): (req, res, next) => void
 ```
 
 Express middleware that generates an API signature for your methods. 
 
-### Parameters
+#### Parameters
 Each argument is a string of a module to import. Using the `define` method in those modules registers them with SpaceBridge and allows them to create an API.
 
-### Returns 
+#### Returns 
 An Express middleware function
 
-### Throws
+#### Throws
 **TODO**
