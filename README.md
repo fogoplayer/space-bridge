@@ -10,7 +10,7 @@ Server-side execution:
  * can access low-level APIs to work with highly specific protocols and formats
 
 Client-side execution:
- * can continue functioning with a slow, spotty, or nonexistent network,
+ * can continue functioning with a slow, spotty, or nonexistent network
  * reduces server load
  * has zero latency
 
