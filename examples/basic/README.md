@@ -1,11 +1,11 @@
 `client.js`
 
-{%include ./client.js %}
+{%include_relative ./client.js %}
 
 `server.js`
 
-{%include ./server.js %}
+{%include_relative ./server.js %}
 
 `library.js`
 
-{%include ./library.js %}
+{%include_relative ./library.js %}
