@@ -47,7 +47,11 @@ spacebridge(import("./myModule.js"), import("../lib/anotherModule.js"), {
 An Express middleware function
 
 #### Throws
-_TODO_
+The `spacebridge` function throws 
+* _TODO_
+
+The function that it returns throws:
+* ReferenceError - an API call was recieved asking for a method that does not exist.
 
 ## Types
 
