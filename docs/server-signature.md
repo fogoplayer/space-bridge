@@ -30,6 +30,7 @@ spacebridge(...modules: ReturnType<typeof import>[], options?: SpaceBridgeOption
 Express middleware that generates an API signature for your methods. It creates a unique URL for each method, based on the name. It also generates a GET endpoint with a mapping of URLs to function names. 
 Under the hood, SpaceBridge is making POST requests to these endpoints to call these methods and a GET request to get diagnostic information (such as typical response time) about the endpoint, and a PUT request to provide diagnostic information (such as the response time for that client).
 Because we are using dynamic imports, if a request comes in before we are done importing, the server will respond as soon as the relevent function is imported.
+Static imports at the top of the file can be used instead of the modules parameter, but is discouraged for lack of clarity.
 
 For example:
 ```ts
