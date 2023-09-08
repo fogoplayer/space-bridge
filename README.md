@@ -1,6 +1,6 @@
 # space-bridge
 
-SpaceBridge is a library that serves as a load balancer for code that can be executed client-side or server-side. Each execution environment has its own advantages and disadvantages.
+SpaceBridge is a research project by Zarin Loosli; a library that serves as a load balancer for code that can be executed client-side or server-side. Each execution environment has its own advantages and disadvantages.
 
 Server-side execution:
  * is not affected by the specs of the users' device

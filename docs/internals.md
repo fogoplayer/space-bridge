@@ -15,7 +15,7 @@ They can be overridden by the user by passing a new function to `set[Factor]Opin
 _TODO is this a good idea?_
 
 ### Factors
-_TODO not finalized_
+_not finalized_
 
 `network` - what the network says about where we should execute
 `specs` - what the hardware difference says about where we should execute

@@ -21,10 +21,12 @@ Asynchronous methods passed into `define` get awaited, meaning that when the def
 
 Because SpaceBridge's API uses the function name to connect functionality on the client and on the server, `define` checks that each function passed in has a unique name
 
+`options`, when provided, does a deep merge to only overwrite properties that have been specified. SpaceBridge provides an export called `unset` that can be used to revert an option back to the default.
+
 #### Parameters
 `name` - the name of the function
 `func` - the user-defined function to be wrapped in SpaceBridge logic
-`options` - users can override global preferences by passing in a new options object. _TODO do we merge the two, or is it just an overwrite? If we merge it, we probably need an "unset" keyword or something._
+`options` - users can override global preferences by passing in a new options object. 
 
 #### Returns
 A function that returns a promise that resolves to the return value of `func`
@@ -158,7 +160,7 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 
 ### InitOptions
 ```ts
-type Factor = "network" | "specs" | "cost" | "performance" // TODO subject to change
+type Factor = "network" | "specs" | "cost" | "performance" // subject to change from further research
 ```
 
 ```ts
