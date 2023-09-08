@@ -53,9 +53,9 @@ void
 none
 
 
-### lazy _TODO don't love the name_
+### networkFirst
 ```ts
-lazy(modulePromise: ReturnType<typeof import>, signature?: { 
+networkFirst(modulePromise: ReturnType<typeof import>, signature?: { 
   methods?: (string | Schema)[], 
   members?: (string | Schema)[] 
 }): { 
@@ -66,7 +66,7 @@ lazy(modulePromise: ReturnType<typeof import>, signature?: {
 Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the methods are immediately callable. If the method is called before the code is finished loading, SpaceBridge executes the function remotely and returns a value. This makes it ideal for very large libraries, allowing for immediate responsiveness while the code is loaded in the background.
 For example:
 ```ts
-const module = lazy(import("./module.mjs"), {
+const module = networkFirst(import("./module.mjs"), {
   methods: ["method1", {
     name: "method2",
     args: [{name: "foo", type: String}]
@@ -77,6 +77,50 @@ const module = lazy(import("./module.mjs"), {
     type: Object
   }]
 })
+```
+
+#### Parameters
+`url` - the URL to import from
+`signature` - an object describing the methods and members being imported
+
+#### Returns
+An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
+
+#### Throws
+SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
+SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
+
+
+### lazy
+```ts
+lazy(fetchModule: Function, signature?: { 
+  methods?: (string | Schema)[], 
+  members?: (string | Schema)[] 
+}): [
+  { 
+    typeof members[number]: Promise<any>;
+    typeof methods[number]: (...any) => Promise<any>
+  },
+  Function
+]
+```
+Similar to networkFirst, but won't start downloading until triggered.
+
+For example:
+```ts
+const [myModule, downloadMyModule]  = lazy(() => import("./my-module.mjs"), {
+  methods: ["method1", {
+    name: "method2",
+    args: [{name: "foo", type: String}]
+    returnType: Array
+  }]
+  members: ["member1", {
+    name: "member2",
+    type: Object
+  }]
+})
+
+document.querySelector(".download-button").addEventListener("click", () => downloadMyModule());
 ```
 
 #### Parameters
