@@ -4,7 +4,7 @@
 
 ### define
 ```ts
-define(name: string, func: Function, options?: DefineOptions): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
+define(name: string, func: Function, options?: DefineOptions): BridgedFunction
 ```
 A higher-order function that wraps your function definitions so that they can use SpaceBridge logic. It is isomorphic, so you can use define in your modules pre-export and the correct logic will be loaded in each environment. It returns a function that returns a promise, and that promise resolves to the return value of your function. For example:
 
@@ -157,6 +157,15 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 
 
 ## Types
+
+### BridgedFunction
+```ts
+type BridgedFunction<OrigFunc extends Function> = 
+  (Parameters<OrigFunc>) => Promise<ReturnType<OrigFunc>> & {
+    runLocal: (Parameters<OrigFunc>) => Promise<ReturnType<OrigFunc>>
+    runRemote: (Parameters<OrigFunc>) => Promise<ReturnType<OrigFunc>>
+  }
+```
 
 ### InitOptions
 ```ts
