@@ -1,3 +1,5 @@
+# Basic Example
+
 `client.js`
 
 ```js
