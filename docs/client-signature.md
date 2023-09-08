@@ -53,11 +53,24 @@ void
 none
 
 
-### lazy
+### lazy _TODO don't love the name_
 ```ts
-lazy(url: string, signature?: { methods?: string[], members?: string[] }): { typeof members[number]: Promise<any>; typeof methods[number]: (...any) => Promise<any> } 
+lazy(modulePromise: ReturnType<typeof import>, signature?: { 
+  methods?: string[], 
+  members?: string[] 
+}): { 
+  typeof members[number]: Promise<any>;
+  typeof methods[number]: (...any) => Promise<any>
+} 
 ```
 Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the methods are immediately callable. If the method is called before the code is finished loading, SpaceBridge executes the function remotely and returns a value. This makes it ideal for very large libraries, allowing for immediate responsiveness while the code is loaded in the background.
+For example:
+```ts
+const module = lazy(import("./module.mjs"), {
+  methods: ["method1", "method2"]
+  members: ["member1", "member2"]
+})
+```
 
 #### Parameters
 `url` - the URL to import from
