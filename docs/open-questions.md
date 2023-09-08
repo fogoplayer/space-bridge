@@ -14,6 +14,8 @@
 
 ## Internals
 * What factors should influence load-balancing?
+
+### [subroutines](https://github.com/fogoplayer/space-bridge/blob/spec/docs/internals.md#subroutines)
 * Is there a better way to structure our subroutines API? 
   - Do we want them to return a spectrum between 0 and 1 or a boolean? 
   - How do the weights affect things?
