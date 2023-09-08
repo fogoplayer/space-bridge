@@ -18,7 +18,9 @@ Even when code is technically capable of running in both environments, most serv
 
 Imagine:
 A browser-based 3d modeling program can use server-side processing when running on a low-end Chromebook while utilizing the local power users' engineering workstations.
+
 An AI image generator's models take several minutes to load when running client-side. The site is immediately responsive via the API, then seamlessly transition users to a local copy of the model whenever it is downloaded.
+
 Photo and video editors can use remote render farms when a user hits "export" with a solid internet connection, but when they are offline it will fall back to a local version.
 
 ## Read More:
