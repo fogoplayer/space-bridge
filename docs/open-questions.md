@@ -2,10 +2,10 @@
 
 ## Client API
 
-### [define](https://github.com/fogoplayer/space-bridge/blob/spec/docs/client-signature.md#define)
+### [define](./client-signature.md#define)
 * Is there a way to avoid naming functions twice (once as a named export and once to register it with SpaceBridge)
 
-### [queue](https://github.com/fogoplayer/space-bridge/blob/spec/docs/client-signature.md#queue)
+### [queue](./client-signature.md#queue)
 * What shou
 
 
@@ -15,7 +15,7 @@
 ## Internals
 * What factors should influence load-balancing?
 
-### [subroutines](https://github.com/fogoplayer/space-bridge/blob/spec/docs/internals.md#subroutines)
+### [subroutines](./internals.md#subroutines)
 * Is there a better way to structure our subroutines API? 
   - Do we want them to return a spectrum between 0 and 1 or a boolean? 
   - How do the weights affect things?
