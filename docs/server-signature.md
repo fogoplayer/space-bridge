@@ -24,17 +24,35 @@ SpaceBridgeCollisionError - The name of the function being added has already bee
 
 ### spacebridge
 ```ts
-spacebridge(...modules: string[]): (req, res, next) => void
+spacebridge(...modules: ReturnType<typeof import>[], options?: SpaceBridgeOptions): (req, res, next) => void
 ```
 
 Express middleware that generates an API signature for your methods. It creates a unique URL for each method, based on the name. It also generates a GET endpoint with a mapping of URLs to function names. 
 Under the hood, SpaceBridge is making POST requests to these endpoints to call these methods and a GET request to get diagnostic information (such as typical response time) about the endpoint, and a PUT request to provide diagnostic information (such as the response time for that client).
+Because we are using dynamic imports, if a request comes in before we are done importing, the server will respond as soon as the relevent function is imported.
+
+For example:
+```ts
+spacebridge(import("./myModule.js"), import("../lib/anotherModule.js"), {
+  prefix: 
+})
+```
 
 #### Parameters
-Each argument is a string of a module to import. Using the `define` method in those modules registers them with SpaceBridge and allows them to create an API.
+`modules` - a series of dynamic imports of modules using the `define` method
+`options` - configures the server
 
 #### Returns 
 An Express middleware function
 
 #### Throws
 _TODO_
+
+## Types
+
+### SpaceBridgeOptions
+```ts
+type SpaceBridgeOptions = {
+  prefix: string = "spacebridge"; // a prefix for the spacebridge API endpoints
+}
+```

@@ -119,11 +119,12 @@ type Factor = "network" | "specs" | "cost" | "performance" // TODO subject to ch
 
 ```ts
 {
-  baseUrl: string // the base URL of the server where remote requests should be routed to
-  weights: { //the relative weight that should be given to each factor. 
+  prefix?: string = "spacebridge"; // a prefix for the spacebridge API endpoints
+  baseUrl?: string; // the base URL of the server where remote requests should be routed to
+  weights?: { //the relative weight that should be given to each factor. 
     // Default for each factor is 1 if no weights are specified or the average of the specified weights if only some are not specified.
     [key: Factor]: number
-  }
+  };
 }: InitOptions
 ```
 
