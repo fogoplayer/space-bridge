@@ -26,6 +26,6 @@ Photo and video editors can use remote render farms when a user hits "export" wi
 ## Read More:
 * [Client-side API](./docs/client-signature.md)
 * [Server-side API](./docs/server-signature.md)
-* [Unresolved Design Questions](./docs/open-questions.md)
+* [Unresolved Design Questions](./docs/open-questions.md) - feedback is welcome!
 * [Internal Details](./docs/internals.md)
 * [Examples](./docs/examples)
