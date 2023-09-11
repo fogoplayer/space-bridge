@@ -1,3 +1,5 @@
-import {sum} from "./library.js"
+import { clientHello as hello } from "./client-library.js";
 
-const total = sum(3.14, 6.28)
+console.log(hello.runLocal()); // "Hello from client!"
+console.log(hello.runRemote()); // "Hello from server!"
+console.log(hello()); // Could be either

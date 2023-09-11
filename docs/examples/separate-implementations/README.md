@@ -1,4 +1,4 @@
-# Basic Example
+# Separate Implementations
 
 `client.js`
 
@@ -14,8 +14,14 @@
 ```
 
 
-`library.js`
+`client-library.js`
 
 ```js
-{%include_relative library.js %}
+{%include_relative client-library.js %}
+```
+
+`server-library.js`
+
+```js
+{%include_relative server-library.js %}
 ```

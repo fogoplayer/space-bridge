@@ -5,7 +5,7 @@ const app = express();
 const port = 3000;
 
 app.use(spacebridge(
-  import("./library.js")
+  import("./server-library.js")
 ))
 
 // Listen on port 3000
