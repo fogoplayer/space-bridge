@@ -1,2 +1,3 @@
-[Basic Example](basic)
-[Separate implementations on client and server side](separate-implementations)
+- [Basic example](basic)
+- [Separate implementations on client and server side](separate-implementations)
+- [Lazy-loading](lazy)

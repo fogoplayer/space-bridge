@@ -103,7 +103,7 @@ lazy(fetchModule: Function, signature?: {
     typeof members[number]: Promise<any>;
     typeof methods[number]: (...any) => Promise<any>
   },
-  Function
+  () => Promise
 ]
 ```
 Similar to networkFirst, but won't start downloading until triggered.
@@ -131,6 +131,7 @@ document.querySelector(".download-button").addEventListener("click", () => downl
 
 #### Returns
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
+A function that downloads the module and returns a promise that resolves when the download is complete.
 
 #### Throws
 SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
