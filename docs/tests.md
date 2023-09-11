@@ -63,3 +63,7 @@
 * Works with static imports
 * Throws referenceError for invalid requests
 * All options work as intended
+
+## Internals
+* If the user is offline, always opt for local execution
+* To be determined in Phase 3
