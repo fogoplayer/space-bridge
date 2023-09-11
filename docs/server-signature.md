@@ -1,20 +1,21 @@
-# API Signature
+# Server API Signature
 
-## Isomorphic Functions
+## Methods
 
 ### define
 ```ts
-define(name: string, func: Function): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
+define(name: string, func: Function, options: SpaceBridgeOptions): (Parameters<typeof func>) => Promise<ReturnType<typeof func>>
 ```
 Registers the method with the SpaceBridge middleware. The name is used to generate an API url which is mapped to the function.
 
-Asynchronous methods passed into `define` get awaited so that the response sent back is a value, not a promise.
+Unlike on the client, on the server `define` returns the same method that gets passed in, without being wrapped in a promise. This means defined functions can be exported and used normally.
 
 Because SpaceBridge's API uses the function name to connect functionality on the client and on the server, `define` checks that each function passed in has a unique name
 
 #### Parameters
 `name` - the name of the function
 `func` - the user-defined function to be wrapped in SpaceBridge logic
+`options` - overrides for the global SpaceBridge options
 
 #### Returns
 `func`
@@ -38,7 +39,8 @@ Static imports at the top of the file can be used instead of the modules paramet
 For example:
 ```ts
 spacebridge(import("./myModule.js"), import("../lib/anotherModule.js"), {
-  prefix: 
+  prefix: "my-app-bridge",
+  stats: false;
 })
 ```
 
@@ -62,5 +64,6 @@ The function that it returns throws:
 ```ts
 type SpaceBridgeOptions = {
   prefix: string = "spacebridge"; // a prefix for the spacebridge API endpoints
+  stats: boolean = true; // if false, GET and PUT requests return a 404
 }
 ```

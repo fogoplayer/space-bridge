@@ -15,6 +15,9 @@
 ## Server API
 * Does the middleware function throw any errors?
 
+### [define](./server-signature.md#define)
+* Should it return a promise-wrapped function? It's not technologically necessary but might be nice for consistency
+
 ## Internals
 * What factors should influence load-balancing?
 
