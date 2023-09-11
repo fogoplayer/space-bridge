@@ -5,6 +5,9 @@
 ### [define](./client-signature.md#define)
 * Is there a way to avoid naming functions twice (once as a named export and once to register it with SpaceBridge)
 
+### [networkFirst](./client-signature.md#networkFirst)
+* Should networkFirst & lazy expose their download progress? (https://javascript.info/fetch-progress)
+
 ### [queue](./client-signature.md#queue)
 * What should queue return if it has been successfully added to the BackgroundSync but hasn't actually been sent?
 

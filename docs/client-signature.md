@@ -82,7 +82,7 @@ const module = networkFirst(import("./module.mjs"), {
 ```
 
 #### Parameters
-`url` - the URL to import from
+`url` - a dynamic import of the module
 `signature` - an object describing the methods and members being imported
 
 #### Returns
