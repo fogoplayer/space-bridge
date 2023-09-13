@@ -4,24 +4,29 @@ import SpaceBridgeClientOnlyError from "./SpaceBridgeClientOnlyError.mjs";
 const isServer = typeof process !== undefined || typeof window === undefined;
 
 export function define() {
-  if (isServer) clientDefine();
-  else serverDefine();
+  if (isServer) serverDefine();
+  else clientDefine();
 }
 
 export function init() {
-  if (isServer) clientInit();
-  else throw SpaceBridgeClientOnlyError;
+  if (isServer) throw SpaceBridgeClientOnlyError();
+  else clientInit();
 }
 
 export function networkFirst() {
-  if (isServer) clientNetworkFirst();
-  else throw SpaceBridgeClientOnlyError;
+  if (isServer) throw SpaceBridgeClientOnlyError();
+  else clientNetworkFirst();
 }
 export function lazy() {
-  if (isServer) clientLazy();
-  else throw SpaceBridgeClientOnlyError;
+  if (isServer) throw SpaceBridgeClientOnlyError();
+  else clientLazy();
 }
 export function queue() {
-  if (isServer) clientQueue();
-  else throw SpaceBridgeClientOnlyError;
+  if (isServer) throw SpaceBridgeClientOnlyError();
+  else clientQueue();
+}
+
+export function spacebridge() {
+  if (isServer) throw SpaceBridgeClientOnlyError();
+  else serverSpaceBridge();
 }
