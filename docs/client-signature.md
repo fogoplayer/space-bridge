@@ -25,14 +25,16 @@ Because SpaceBridge's API uses the function name to connect functionality on the
 
 #### Parameters
 `name` - the name of the function
+
 `func` - the user-defined function to be wrapped in SpaceBridge logic
+
 `options` - users can override global preferences by passing in a new options object. 
 
 #### Returns
 A function that returns a promise that resolves to the return value of `func`
 
 #### Throws
-SpaceBridgeCollisionError - The name of the function being added has already been registered with SpaceBridge
+`SpaceBridgeCollisionError` - The name of the function being added has already been registered with SpaceBridge
 
 
 ### init
@@ -49,13 +51,15 @@ Initial setup for SpaceBridge.
 
 #### Parameters
 `baseUrl` - the base URL of the server where remote requests should be routed to
+
 `weights` - the relative weight that should be given to each factor. Default for each factor is 1 if no weights are specified or the average of the specified weights if only some are not specified.
 
 #### Returns
 void
 
 #### Throws
-none
+`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+
 
 
 ### networkFirst
@@ -69,6 +73,7 @@ networkFirst(modulePromise: ReturnType<typeof import>, signature?: {
 } 
 ```
 Dynamic imports enhanced by SpaceBridge. Unlike a usual dynamic import, the methods are immediately callable. If the method is called before the code is finished loading, SpaceBridge executes the function remotely and returns a value. This makes it ideal for very large libraries, allowing for immediate responsiveness while the code is loaded in the background.
+
 For example:
 ```ts
 const module = networkFirst(import("./module.mjs"), {
@@ -86,14 +91,16 @@ const module = networkFirst(import("./module.mjs"), {
 
 #### Parameters
 `url` - a dynamic import of the module
+
 `signature` - an object describing the methods and members being imported
 
 #### Returns
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
 
 #### Throws
-SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
-SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
+`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+
+`SpaceBridgeCollisionError` - The name of one of the methods or members being added has already been registered with SpaceBridge
 
 
 ### lazy
@@ -130,15 +137,18 @@ document.querySelector(".download-button").addEventListener("click", () => downl
 
 #### Parameters
 `url` - the URL to import from
+
 `signature` - an object describing the methods and members being imported
 
 #### Returns
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
+
 A function that downloads the module and returns a promise that resolves when the download is complete.
 
 #### Throws
-SpaceBridgeClientOnlyError - the function is being called outside of a browser environment
-SpaceBridgeCollisionError - The name of one of the methods or members being added has already been registered with SpaceBridge
+`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+
+`SpaceBridgeCollisionError` - The name of one of the methods or members being added has already been registered with SpaceBridge
 
 
 ### queue
@@ -150,6 +160,7 @@ A drop-in replacement for the `fetch` API that utilizes the [BackgroundSync API]
 
 #### Parameters
 `resource` - the URL to fetch against
+
 `options` - the fetch options object
 
 #### Returns

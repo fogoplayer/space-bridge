@@ -14,14 +14,16 @@ Because SpaceBridge's API uses the function name to connect functionality on the
 
 #### Parameters
 `name` - the name of the function
+
 `func` - the user-defined function to be wrapped in SpaceBridge logic
+
 `options` - overrides for the global SpaceBridge options
 
 #### Returns
 `func`
 
 #### Throws
-SpaceBridgeCollisionError - The name of the function being added has already been registered with SpaceBridge
+`SpaceBridgeCollisionError` - The name of the function being added has already been registered with SpaceBridge
 
 ### spacebridge
 ```ts
@@ -46,6 +48,7 @@ spacebridge(import("./myModule.js"), import("../lib/anotherModule.js"), {
 
 #### Parameters
 `modules` - a series of dynamic imports of modules using the `define` method
+
 `options` - configures the server
 
 #### Returns 

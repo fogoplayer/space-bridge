@@ -21,7 +21,7 @@
 * The returned module object matches the signature passed in
 * Members can be accessed
 * Methods can be accessed
-* Throws SpaceBridgeClientOnlyError when called in node
+* Throws `SpaceBridgeClientOnlyError` when called in node
 * Throws collision error if method is already defined elsewhere
 
 ### lazy
@@ -34,7 +34,7 @@
 * The returned module object matches the signature passed in
 * Members can be accessed
 * Methods can be accessed
-* Throws SpaceBridgeClientOnlyError when called in node
+* Throws `SpaceBridgeClientOnlyError` when called in node
 * Throws collision error if method is already defined elsewhere
 
 ### queue
