@@ -1,6 +1,6 @@
-export default class SpaceBridgeClientOnlyError extends Error {
+export default class SpaceBridgeEnvironmentError extends Error {
   constructor(message) {
     super(message);
-    this.name = "SpaceBridgeClientOnlyError";
+    this.name = "SpaceBridgeEnvironmentError";
   }
 }
