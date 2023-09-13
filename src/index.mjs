@@ -1,4 +1,5 @@
 import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
+import { serverCreateMiddleware, serverDefine } from "./server.mjs";
 
 // if we do have process or don't have a window
 const isServer = typeof process !== undefined || typeof window === undefined;
@@ -28,5 +29,5 @@ export function queue() {
 
 export function spacebridge() {
   if (isServer) throw SpaceBridgeEnvironmentError();
-  else serverSpaceBridge();
+  else serverCreateMiddleware();
 }

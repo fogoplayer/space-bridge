@@ -25,3 +25,8 @@ type MemberSchema = {
   name: string;
   type: Function; // class name like Object or MyClass
 };
+
+type SpaceBridgeOptions = {
+  prefix: string = "spacebridge"; // a prefix for the spacebridge API endpoints
+  stats: boolean = true; // if false, GET and PUT requests return a 404
+};
