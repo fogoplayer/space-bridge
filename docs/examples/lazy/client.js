@@ -1,4 +1,7 @@
+import { init } from "space-bridge";
 import lazy from "space-bridge";
+
+init({ baseUrl: "https://my-app.com" });
 
 const [{ sum, subtract }, downloadLibrary] = lazy(
   () => import("./library.js"),

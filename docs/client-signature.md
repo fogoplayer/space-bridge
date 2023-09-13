@@ -38,8 +38,11 @@ SpaceBridgeCollisionError - The name of the function being added has already bee
 ### init
 ```ts
 init({
+  prefix,
   baseUrl,
   weights,
+  headers,
+  body,
 }: InitOptions)
 ```
 Initial setup for SpaceBridge.
