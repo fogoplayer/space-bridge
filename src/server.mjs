@@ -14,9 +14,23 @@ export function serverDefine(
     options,
   };
 
-  return async function (...(func.arguments)) {
-    func;
+  /** @type {PromiseWrappedFunction} */
+  const promiseWrappedFunction = async function (...args) {
+    await func(args);
   };
+
+  /** @type {BridgedFunction} */
+  const returnedFunction = Object.assign(promiseWrappedFunction, {
+    /** @type {BridgedFunction["runLocal"]} */
+    runLocal: func,
+    /** @type {BridgedFunction["runRemote"]} */
+    runRemote: promiseWrappedFunction,
+  });
+
+  // @ts-ignore
+  // TODO weird things happen with generics and imports. I can't say that
+  // `registeredFunction` is of type `BridgedFunction<F>` because TS doesn't know what `F` is in this file
+  return returnedFunction;
 }
 
 /**
@@ -36,19 +50,18 @@ export function serverDefine(
  * If a request comes in before the imports have resolved, the server will
  * respond as soon as the relevent function is imported.
  *
- * @param {...Promise<any>[]} imports `import()`s for each of the libraries to be registered
- * @param {SpaceBridgeOptions} options overrides for the global SpaceBridge options
+ * @param {...[...Promise<any>[], SpaceBridgeOptions]} args `import()`s for each of the libraries to be registered, followed by overrides for the global SpaceBridge options
  * @returns
  */
-export function serverCreateMiddleware(
-  /** @type {[Promise<any> | SpaceBridgeOptions]} */ ...args
-) {
+export function serverCreateMiddleware(...args) {
   const { prefix, stats } = /** @type {SpaceBridgeOptions} */ (
-    args[args.length - 1]
+    /** @type {unknown} */ (args[args.length - 1])
   );
   const prefixLen = prefix.length;
 
-  const imports = /** @type {Promise<any>[]} */ (args.slice(-1));
+  const imports = /** @type {Promise<any>[]} */ (
+    /** @type {unknown} */ (args.slice(-1))
+  );
 
   /**
    * @param {import("express").Request} req
