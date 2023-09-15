@@ -33,9 +33,9 @@ type SpaceBridgeOptions = {
 
 type Callable = (...args: any[]) => any;
 
-type PromiseWrappedFunction<T extends Callable = Callable> = {
-  (): (...args: Parameters<T>) => Promise<ReturnType<T>>;
-};
+type PromiseWrappedFunction<T extends Callable = Callable> = (
+  ...args: Parameters<T>
+) => Promise<ReturnType<T>>;
 
 type BridgedFunction<T extends Callable = Callable> = {
   (): PromiseWrappedFunction<T>;

@@ -12,6 +12,14 @@ export function shouldRunLocally() {
   return true;
 }
 
+/**
+ * Executes the named function remotely
+ * // TODO pass in function instead of name, use generics?
+ *
+ * @param string name
+ * @param  {...any} args
+ * @returns {Promise<any>}
+ */
 export async function executeFunctionRemotely(name, ...args) {
-  return Promise.resolve("foobar");
+  return await Promise.resolve("foobar");
 }

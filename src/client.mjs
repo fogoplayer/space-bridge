@@ -18,21 +18,29 @@ export function clientDefine(
   };
 
   /**
+   * @type {BridgedFunction}
    * @this {{
-   *  runLocal: Function;
-   *  runRemote: Function;
+   *  runLocal: BridgedFunction["runLocal"];
+   *  runRemote: BridgedFunction["runRemote"];
    * }}
-   * @param  {...any} args
    */
+  // @ts-ignore
   const registeredFunction = async function (...args) {
     if (shouldRunLocally()) return await this.runLocal();
+    this;
 
-    return await this.runRemote(name, ...args);
+    return await this.runRemote(...args);
   };
 
   registeredFunction.runLocal = func;
-  registeredFunction.runRemote = executeFunctionRemotely;
+  /** @type {PromiseWrappedFunction} */
+  registeredFunction.runRemote = async (...args) => {
+    await executeFunctionRemotely(name, ...args);
+  };
 
+  // @ts-ignore
+  // TODO weird things happen with generics and imports. I can't say that
+  // `registeredFunction` is of type `BridgedFunction<F>` because TS doesn't know what `F` is in this file
   return registeredFunction;
 }
 
