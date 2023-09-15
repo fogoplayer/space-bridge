@@ -33,8 +33,6 @@ export function serverDefine(
   return func;
 }
 
-const i = import("./SpaceBridgeClientOnlyError.mjs");
-
 /**
  *
  * @param  {[...Promise<any>[], SpaceBridgeOptions]} args
