@@ -10,24 +10,24 @@ export function define() {
 }
 
 export function init() {
-  if (isServer) throw SpaceBridgeEnvironmentError();
+  if (isServer) throw new SpaceBridgeEnvironmentError();
   else clientInit();
 }
 
 export function networkFirst() {
-  if (isServer) throw SpaceBridgeEnvironmentError();
+  if (isServer) throw new SpaceBridgeEnvironmentError();
   else clientNetworkFirst();
 }
 export function lazy() {
-  if (isServer) throw SpaceBridgeEnvironmentError();
+  if (isServer) throw new SpaceBridgeEnvironmentError();
   else clientLazy();
 }
 export function queue() {
-  if (isServer) throw SpaceBridgeEnvironmentError();
+  if (isServer) throw new SpaceBridgeEnvironmentError();
   else clientQueue();
 }
 
 export function spacebridge() {
-  if (isServer) throw SpaceBridgeEnvironmentError();
+  if (isServer) throw new SpaceBridgeEnvironmentError();
   else serverCreateMiddleware();
 }
