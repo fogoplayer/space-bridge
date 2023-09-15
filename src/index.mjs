@@ -1,5 +1,5 @@
 import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
-import { clientDefine } from "./client.mjs";
+import { clientDefine, clientInit } from "./client.mjs";
 import { serverCreateMiddleware, serverDefine } from "./server.mjs";
 
 // if we do have process or don't have a window
@@ -11,9 +11,10 @@ export function define(name, func, options) {
   else return clientDefine(name, func, options);
 }
 
-export function init() {
+/** @type {typeof clientInit} */
+export function init(options) {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  clientInit();
+  clientInit(options);
 }
 
 export function networkFirst() {

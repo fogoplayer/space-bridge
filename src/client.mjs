@@ -44,3 +44,10 @@ export function clientDefine(
 
   return registeredFunction;
 }
+
+/**
+ * @param {InitOptions} options
+ */
+export function clientInit(options) {
+  return;
+}
