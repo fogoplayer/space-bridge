@@ -1,14 +1,5 @@
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
-
-/**
- * @type {{
- *  [key: string]: {
- *    callback: Function
- *    options?: SpaceBridgeOptions
- *  }
- * }}
- */
-let functionMap = {};
+import { functionMap } from "./internals.mjs";
 
 /**
  * @template {Function} RegisteredFunction
