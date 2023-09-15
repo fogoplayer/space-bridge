@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/fogoplayer/space-bridge/issues"
   },
-  "homepage": "https://github.com/fogoplayer/space-bridge#readme"
+  "homepage": "https://github.com/fogoplayer/space-bridge#readme",
+  "peerDependencies": {
+    "express": "1.x"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17"
+  }
 }

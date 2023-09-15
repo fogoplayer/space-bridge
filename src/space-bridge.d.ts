@@ -27,6 +27,6 @@ type MemberSchema = {
 };
 
 type SpaceBridgeOptions = {
-  prefix: string = "spacebridge"; // a prefix for the spacebridge API endpoints
-  stats: boolean = true; // if false, GET and PUT requests return a 404
+  prefix: string; // a prefix for the spacebridge API endpoints
+  stats: boolean; // if false, GET and PUT requests return a 404
 };
