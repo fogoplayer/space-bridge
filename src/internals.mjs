@@ -16,7 +16,7 @@ export function shouldRunLocally() {
  * Executes the named function remotely
  * // TODO pass in function instead of name, use generics?
  *
- * @param string name
+ * @param {string} name
  * @param  {...any} args
  * @returns {Promise<any>}
  */
