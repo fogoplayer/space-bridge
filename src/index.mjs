@@ -1,4 +1,5 @@
 import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
+import { clientDefine } from "./client.mjs";
 import { serverCreateMiddleware, serverDefine } from "./server.mjs";
 
 // if we do have process or don't have a window

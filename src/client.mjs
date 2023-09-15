@@ -15,7 +15,7 @@ import {
  *
  * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
  */
-export function serverDefine(
+export function clientDefine(
   name,
   func,
   options = { prefix: "spacebridge", stats: true }
