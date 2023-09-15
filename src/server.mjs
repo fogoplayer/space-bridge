@@ -1,17 +1,7 @@
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import { functionMap } from "./internals.mjs";
 
-/**
- * Registers a method with the SpaceBridge middleware
- *
- * @param {string} name a string to allow SpaceBridge to uniquely identify this function
- * @param {Function} func the user-defined function to be wrapped in SpaceBridge logic
- * @param {Partial<SpaceBridgeOptions>} [options] options specific to this function
- *
- * @returns {Function} the function that was passed in
- *
- * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
- */
+/** @type {import("./index.mjs").define} */
 export function serverDefine(
   name,
   func,
@@ -23,7 +13,10 @@ export function serverDefine(
     callback: func,
     options,
   };
-  return func;
+
+  return async function (...(func.arguments)) {
+    func;
+  };
 }
 
 /**

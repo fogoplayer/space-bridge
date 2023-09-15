@@ -5,16 +5,7 @@ import {
   shouldRunLocally,
 } from "./internals.mjs";
 
-/**
- * @template {Function} RegisteredFunction
- * @param {string} name the name of the function
- * @param {RegisteredFunction} func the user-defined function to be wrapped in SpaceBridge logic
- * @param {SpaceBridgeOptions} [options] -overrides for the global SpaceBridge options
- *
- * @returns {Function & { runLocal: Function, runRemote: Function}} a promise-wrapped function // TODO make this more specific
- *
- * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
- */
+/** @type {import("./index.mjs").define} */
 export function clientDefine(
   name,
   func,

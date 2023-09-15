@@ -31,8 +31,14 @@ type SpaceBridgeOptions = {
   stats: boolean; // if false, GET and PUT requests return a 404
 };
 
-type RegisteredFunction {
-  (...args: any[]): Promise<any>
-  runLocal: Function
-  runRemote: Promise<any>
-}
+type Callable = (...args: any[]) => any;
+
+type PromiseWrappedFunction<T extends Callable = Callable> = {
+  (): (...args: Parameters<T>) => Promise<ReturnType<T>>;
+};
+
+type BridgedFunction<T extends Callable = Callable> = {
+  (): PromiseWrappedFunction<T>;
+  runLocal: T;
+  runRemote: PromiseWrappedFunction<T>;
+};
