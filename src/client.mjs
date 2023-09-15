@@ -17,26 +17,28 @@ export function clientDefine(
     options,
   };
 
-  /**
-   * @type {BridgedFunction}
-   * @this {{
-   *  runLocal: BridgedFunction["runLocal"];
-   *  runRemote: BridgedFunction["runRemote"];
-   * }}
-   */
-  // @ts-ignore
-  const registeredFunction = async function (...args) {
-    if (shouldRunLocally()) return await this.runLocal();
-    this;
+  /** @type {BridgedFunction} */
+  const registeredFunction = Object.assign(
+    // base function
+    /** @type {PromiseWrappedFunction} */
+    (
+      async function (...args) {
+        // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
+        if (shouldRunLocally()) return await this.runLocal(...args);
 
-    return await this.runRemote(...args);
-  };
-
-  registeredFunction.runLocal = func;
-  /** @type {PromiseWrappedFunction} */
-  registeredFunction.runRemote = async (...args) => {
-    await executeFunctionRemotely(name, ...args);
-  };
+        // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
+        return await this.runRemote(...args);
+      }
+    ),
+    // other methods
+    {
+      runLocal: func,
+      /** @type {PromiseWrappedFunction} */
+      runRemote: async (...args) => {
+        return await executeFunctionRemotely(name, ...args);
+      },
+    }
+  );
 
   // @ts-ignore
   // TODO weird things happen with generics and imports. I can't say that

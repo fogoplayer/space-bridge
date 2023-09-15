@@ -37,8 +37,8 @@ type PromiseWrappedFunction<T extends Callable = Callable> = (
   ...args: Parameters<T>
 ) => Promise<ReturnType<T>>;
 
-type BridgedFunction<T extends Callable = Callable> = {
-  (): PromiseWrappedFunction<T>;
-  runLocal: T;
-  runRemote: PromiseWrappedFunction<T>;
-};
+type BridgedFunction<T extends Callable = Callable> =
+  PromiseWrappedFunction<T> & {
+    runLocal: T;
+    runRemote: PromiseWrappedFunction<T>;
+  };
