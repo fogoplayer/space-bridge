@@ -30,3 +30,9 @@ type SpaceBridgeOptions = {
   prefix: string; // a prefix for the spacebridge API endpoints
   stats: boolean; // if false, GET and PUT requests return a 404
 };
+
+type RegisteredFunction {
+  (...args: any[]): Promise<any>
+  runLocal: Function
+  runRemote: Promise<any>
+}

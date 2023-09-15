@@ -2,12 +2,13 @@ import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import { functionMap } from "./internals.mjs";
 
 /**
- * @template {Function} RegisteredFunction
- * @param {string} name the name of the function
- * @param {RegisteredFunction} func the user-defined function to be wrapped in SpaceBridge logic
- * @param {SpaceBridgeOptions} [options] -overrides for the global SpaceBridge options
+ * Registers a method with the SpaceBridge middleware
  *
- * @returns {RegisteredFunction} a promise-wrapped function
+ * @param {string} name a string to allow SpaceBridge to uniquely identify this function
+ * @param {Function} func the user-defined function to be wrapped in SpaceBridge logic
+ * @param {Partial<SpaceBridgeOptions>} [options] options specific to this function
+ *
+ * @returns {Function} the function that was passed in
  *
  * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
  */
@@ -18,6 +19,7 @@ export function serverDefine(
 ) {
   if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
   functionMap[name] = {
+    // TODO hash the name for some security
     callback: func,
     options,
   };
@@ -25,6 +27,21 @@ export function serverDefine(
 }
 
 /**
+ * Express middleware that allows registered methods to be callable via API.
+ *
+ * **A word about imports:**
+ *
+ * SpaceBridge does not look at the contents of the imports to determine the
+ * API signature. Methods are registered in their `define` call.
+ *
+ * Technically, as long as the modules have been imported _somewhere_ before
+ * the first request comes in, the API will function as intended. This includes
+ * `import "./example.js"` at the top of server.js. However, the dynamic import
+ * approach is recommended to make it clearer that the module is being imported
+ * to associate it with SpaceBridge.
+ *
+ * If a request comes in before the imports have resolved, the server will
+ * respond as soon as the relevent function is imported.
  *
  * @param {...Promise<any>[]} imports `import()`s for each of the libraries to be registered
  * @param {SpaceBridgeOptions} options overrides for the global SpaceBridge options
@@ -48,6 +65,8 @@ export function serverCreateMiddleware(
   return async (req, res, next) => {
     if (req.path.substring(0, prefixLen) !== prefix) next();
 
+    // TODO get list of method names
+
     if (!stats && (req.method === "GET" || req.method === "PUT")) {
       res.sendStatus(404);
       return;
@@ -66,6 +85,10 @@ export function serverCreateMiddleware(
         // otherwise, wait for the promises to settle
         await Promise.any(imports);
       }
+
+      // TODO POST
+      // TODO GET
+      // TODO PUT
     }
   };
 }
