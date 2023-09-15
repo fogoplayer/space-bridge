@@ -26,10 +26,13 @@ export function serverDefine(
 
 /**
  *
- * @param  {[...Promise<any>[], SpaceBridgeOptions]} args
+ * @param {...Promise<any>[]} imports `import()`s for each of the libraries to be registered
+ * @param {SpaceBridgeOptions} options overrides for the global SpaceBridge options
  * @returns
  */
-export function serverCreateMiddleware(...args) {
+export function serverCreateMiddleware(
+  /** @type {[Promise<any> | SpaceBridgeOptions]} */ ...args
+) {
   const { prefix, stats } = /** @type {SpaceBridgeOptions} */ (
     args[args.length - 1]
   );

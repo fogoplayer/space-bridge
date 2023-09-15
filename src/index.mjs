@@ -4,30 +4,32 @@ import { serverCreateMiddleware, serverDefine } from "./server.mjs";
 // if we do have process or don't have a window
 const isServer = typeof process !== undefined || typeof window === undefined;
 
-export function define() {
-  if (isServer) serverDefine();
-  else clientDefine();
+/** @type {typeof serverDefine} */
+export function define(name, func, options) {
+  if (isServer) return serverDefine(name, func, options);
+  else return clientDefine(name, func, options);
 }
 
 export function init() {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  else clientInit();
+  clientInit();
 }
 
 export function networkFirst() {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  else clientNetworkFirst();
+  clientNetworkFirst();
 }
 export function lazy() {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  else clientLazy();
+  clientLazy();
 }
 export function queue() {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  else clientQueue();
+  clientQueue();
 }
 
-export function spacebridge() {
-  if (isServer) throw new SpaceBridgeEnvironmentError();
-  else serverCreateMiddleware();
+/** @type {serverCreateMiddleware} */
+export function spacebridge(args) {
+  if (isServer) return serverCreateMiddleware(args);
+  throw new SpaceBridgeEnvironmentError();
 }
