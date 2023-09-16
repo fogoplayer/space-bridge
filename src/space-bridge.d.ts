@@ -1,12 +1,12 @@
 type Factor = "network" | "specs" | "cost" | "performance";
 
 interface InitOptions {
-  baseUrl?: string;
-  weights?: {
+  baseUrl: string;
+  weights: {
     [key in Factor]: number;
   };
-  headers?: Object;
-  body?: Object;
+  headers: Object;
+  body: Object;
 }
 
 type DefineOptions = InitOptions & {

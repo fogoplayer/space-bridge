@@ -2,6 +2,7 @@ import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import {
   executeFunctionRemotely,
   functionMap,
+  setOptions,
   shouldRunLocally,
 } from "./internals.mjs";
 
@@ -47,8 +48,10 @@ export function clientDefine(
 }
 
 /**
- * @param {InitOptions} options
+ * Sets the global client-side configuration
+ * @param {Partial<InitOptions>} options
+ * @returns {void};
  */
-export function clientInit(options) {
-  return;
+export function clientSetOptions(options) {
+  setOptions(options);
 }
