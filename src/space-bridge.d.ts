@@ -3,7 +3,7 @@ type Factor = "network" | "specs" | "cost" | "performance";
 interface InitOptions {
   baseUrl?: string;
   weights?: {
-    [key: Factor]: number;
+    [key in Factor]: number;
   };
   headers?: Object;
   body?: Object;
