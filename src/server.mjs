@@ -1,36 +1,24 @@
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import { functionMap, isSettled } from "./internals.mjs";
 
-/** @type {import("./index.mjs").define} */
-export function serverDefine(
-  name,
-  func,
-  options = { prefix: "spacebridge", stats: true }
-) {
-  if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
-  functionMap[name] = {
-    // TODO hash the name for some security
-    callback: func,
-    options,
-  };
-
-  /** @type {PromiseWrappedFunction} */
+/**
+ * Wraps the function in a promise for server use
+ *
+ * @template {Callable} F2
+ * @param {string} name
+ * @param {F2} func
+ * @returns {BridgedFunction<F2>}
+ */
+export function serverConvertFunction(name, func) {
+  /** @type {PromiseWrappedFunction<F2>} */
   const promiseWrappedFunction = async function (...args) {
-    await func(args);
+    return await func(args);
   };
 
-  /** @type {BridgedFunction} */
-  const returnedFunction = Object.assign(promiseWrappedFunction, {
-    /** @type {BridgedFunction["runLocal"]} */
+  return Object.assign(promiseWrappedFunction, {
     runLocal: func,
-    /** @type {BridgedFunction["runRemote"]} */
     runRemote: promiseWrappedFunction,
   });
-
-  // @ts-ignore
-  // TODO weird things happen with generics and imports. I can't say that
-  // `registeredFunction` is of type `BridgedFunction<F>` because TS doesn't know what `F` is in this file
-  return returnedFunction;
 }
 
 /**

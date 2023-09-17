@@ -7,21 +7,17 @@ import {
   shouldRunLocally,
 } from "./internals.mjs";
 
-/** @type {import("./index.mjs").define} */
-export function clientDefine(
-  name,
-  func,
-  options = { prefix: "spacebridge", stats: true }
-) {
-  if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
-  functionMap[name] = {
-    callback: func,
-    options,
-  };
-
-  /** @type {BridgedFunction} */
-  const registeredFunction = Object.assign(
-    // base function
+/**
+ * Wraps the function to include balancing logic and
+ * environment-specific triggers
+ *
+ * @template {Callable} F2
+ * @param {string} name
+ * @param {F2} func
+ * @returns {BridgedFunction<F2>}
+ */
+export function clientDefine(name, func) {
+  return Object.assign(
     /** @type {PromiseWrappedFunction} */
     (
       async function (...args) {
@@ -41,11 +37,6 @@ export function clientDefine(
       },
     }
   );
-
-  // @ts-ignore
-  // TODO weird things happen with generics and imports. I can't say that
-  // `registeredFunction` is of type `BridgedFunction<F>` because TS doesn't know what `F` is in this file
-  return registeredFunction;
 }
 
 /**
