@@ -82,12 +82,24 @@ export function clientNetworkFirst(modulePromise, { methods, members }) {
         async function (...args) {
           if (await isSettled(modulePromise)) {
             const module = await modulePromise;
-            return await module[methodName](...args); // TODO use define
+            return await module[methodName](...args); // TODO use define, race import against API call
           }
 
           return executeFunctionRemotely(methodName, ...args);
         }
       );
+  }
+
+  // members
+  for (const member of members) {
+    const isSchema = !(typeof member === "string");
+    /** @type {keyof M} */
+    const memberName = isSchema ? member?.name : member;
+
+    promisedModule[memberName] = new Promise(async (res, rej) => {
+      const module = await modulePromise; // TODO find a way to fetch values over API too
+      res(module[memberName]);
+    });
   }
   return promisedModule;
 }
