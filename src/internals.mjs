@@ -40,3 +40,16 @@ export async function executeFunctionRemotely(name, ...args) {
 export function setOptions(options) {
   spaceBridgeGlobalOptions = Object.assign(spaceBridgeGlobalOptions, options); // TODO add deep assignment
 }
+
+/**
+ * Checks if a promise is settled
+ * @param {Promise<unknown>} promise
+ * @returns {Promise<boolean>}
+ */
+export async function isSettled(promise) {
+  // We put `pending` promise after the promise to test,
+  // which forces .race to test `promise` first
+  return await Promise.race([promise, "pending"]).then(
+    (val) => val !== "pending"
+  );
+}

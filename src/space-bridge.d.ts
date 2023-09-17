@@ -42,3 +42,11 @@ type BridgedFunction<T extends Callable = Callable> =
     runLocal: T;
     runRemote: PromiseWrappedFunction<T>;
   };
+
+type Module = { [key: string]: any | ((...args: any[]) => any) };
+
+type PromiseWrappedModule<M extends Module> = {
+  [K in keyof M]:
+    | Promise<M[K]>
+    | ((...args: Parameters<M[K]>) => Promise<ReturnType<M[K]>>);
+};

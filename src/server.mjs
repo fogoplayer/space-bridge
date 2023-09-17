@@ -1,5 +1,5 @@
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
-import { functionMap } from "./internals.mjs";
+import { functionMap, isSettled } from "./internals.mjs";
 
 /** @type {import("./index.mjs").define} */
 export function serverDefine(
@@ -97,17 +97,4 @@ export function serverCreateMiddleware(...args) {
       // TODO PUT
     }
   };
-}
-
-/**
- * Checks if a promise is settled
- * @param {Promise<unknown>} promise
- * @returns {Promise<boolean>}
- */
-async function isSettled(promise) {
-  // We put `pending` promise after the promise to test,
-  // which forces .race to test `promise` first
-  return await Promise.race([promise, "pending"]).then(
-    (val) => val !== "pending"
-  );
 }
