@@ -58,7 +58,7 @@ Initial setup for SpaceBridge.
 void
 
 #### Throws
-`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+`SpaceBridgeEnvironmentError` - the function is being called outside of a browser environment
 
 
 
@@ -98,7 +98,7 @@ const module = networkFirst(import("./module.mjs"), {
 An object where the keys are the values of methods and members. The values for methods are functions that return promises that resolve to the return value of the method (similar to `define`). The values for members are promises that resolve to the value of the member.
 
 #### Throws
-`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+`SpaceBridgeEnvironmentError` - the function is being called outside of a browser environment
 
 `SpaceBridgeCollisionError` - The name of one of the methods or members being added has already been registered with SpaceBridge
 
@@ -146,7 +146,7 @@ An object where the keys are the values of methods and members. The values for m
 A function that downloads the module and returns a promise that resolves when the download is complete.
 
 #### Throws
-`SpaceBridgeClientOnlyError` - the function is being called outside of a browser environment
+`SpaceBridgeEnvironmentError` - the function is being called outside of a browser environment
 
 `SpaceBridgeCollisionError` - The name of one of the methods or members being added has already been registered with SpaceBridge
 

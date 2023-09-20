@@ -10,6 +10,7 @@
 * Throws collision error if method is defined twice in the same file
 * Throws collision error if method is defined twice in two different files
 * All options work as intended
+* option: unset works as intended
 
 ### init
 * Check that each setting does what it says it does
@@ -21,7 +22,7 @@
 * The returned module object matches the signature passed in
 * Members can be accessed
 * Methods can be accessed
-* Throws `SpaceBridgeClientOnlyError` when called in node
+* Throws `SpaceBridgeEnvironmentError` when called in node
 * Throws collision error if method is already defined elsewhere
 
 ### lazy
@@ -34,7 +35,7 @@
 * The returned module object matches the signature passed in
 * Members can be accessed
 * Methods can be accessed
-* Throws `SpaceBridgeClientOnlyError` when called in node
+* Throws `SpaceBridgeEnvironmentError` when called in node
 * Throws collision error if method is already defined elsewhere
 
 ### queue
