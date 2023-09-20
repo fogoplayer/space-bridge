@@ -4,6 +4,7 @@ import {
   clientDefine,
   clientLazy,
   clientNetworkFirst,
+  clientQueue,
   clientSetOptions,
 } from "./client.mjs";
 import { functionMap } from "./internals.mjs";
@@ -70,9 +71,11 @@ export function lazy(fetchModule, { methods, members }) {
   if (isServer) throw new SpaceBridgeEnvironmentError();
   return clientLazy(fetchModule, { methods, members });
 }
-export function queue() {
+
+/** @type {typeof clientQueue} */
+export function queue(input, init = undefined) {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  clientQueue();
+  return clientQueue(input, init);
 }
 
 /** @type {serverCreateMiddleware} */

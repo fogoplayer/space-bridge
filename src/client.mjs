@@ -152,3 +152,13 @@ export function clientLazy(fetchModule, { methods, members }) {
   };
   return [promisedModule, trigger];
 }
+
+/**
+ * A drop-in replacement for the fetch API that utilizes the BackgroundSync API
+ * where possible. Where the API is unavailable (due to browser support,
+ * execution outside of a PWA, or any other limitation) the fetch API is used.
+ * @type {typeof fetch}
+ */
+export async function clientQueue(input, init = undefined) {
+  return await fetch(input, init); // TODO implement queueing
+}
