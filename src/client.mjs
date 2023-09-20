@@ -94,3 +94,61 @@ export function clientNetworkFirst(modulePromise, { methods, members }) {
   }
   return promisedModule;
 }
+
+/**
+ *
+ * @template {Module} M
+ * @param {() => Promise<M>} fetchModule
+ * @param {{methods: [string | MethodSchema], members: [string | MemberSchema]}} signature
+ * @returns {[PromiseWrappedModule<M>, ()=>void]} TODO make it return a promise-wrapped module
+ */
+export function clientLazy(fetchModule, { methods, members }) {
+  /** @type {(val: any) => void} */
+  let resolveModulePromise;
+  const modulePromise = new Promise((res, rej) => {
+    resolveModulePromise = res;
+  });
+
+  /** @type {PromiseWrappedModule<M>} */
+  // @ts-ignore
+  const promisedModule = {};
+
+  // methods
+  for (const method of methods) {
+    const isSchema = !(typeof method === "string");
+    /** @type {keyof M} */
+    const methodName = isSchema ? method?.name : method;
+    const methodArgs = isSchema ? method?.args.map((arg) => arg.name) : [];
+
+    promisedModule[methodName] =
+      /** @type {(...args: any[]) => Promise<any>} */
+      (
+        async function (...args) {
+          if (await isSettled(modulePromise)) {
+            const module = await modulePromise;
+            return await module[methodName](...args); // TODO use define, race import against API call
+          }
+
+          return executeFunctionRemotely(methodName, ...args);
+        }
+      );
+  }
+
+  // members
+  for (const member of members) {
+    const isSchema = !(typeof member === "string");
+    /** @type {keyof M} */
+    const memberName = isSchema ? member?.name : member;
+
+    promisedModule[memberName] = new Promise(async (res, rej) => {
+      const module = await modulePromise; // TODO find a way to fetch values over API too
+      res(module[memberName]);
+    });
+  }
+
+  const trigger = async () => {
+    const fetchedModule = await fetchModule();
+    resolveModulePromise(fetchedModule);
+  };
+  return [promisedModule, trigger];
+}

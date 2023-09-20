@@ -1,6 +1,11 @@
 import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
-import { clientDefine, clientSetOptions } from "./client.mjs";
+import {
+  clientDefine,
+  clientLazy,
+  clientNetworkFirst,
+  clientSetOptions,
+} from "./client.mjs";
 import { functionMap } from "./internals.mjs";
 import { serverCreateMiddleware, serverConvertFunction } from "./server.mjs";
 
@@ -54,13 +59,16 @@ export function setOptions(options) {
   clientSetOptions(options);
 }
 
-export function networkFirst() {
+/** @type {typeof clientNetworkFirst} */
+export function networkFirst(modulePromise, { methods, members }) {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  clientNetworkFirst();
+  return clientNetworkFirst(modulePromise, { methods, members });
 }
-export function lazy() {
+
+/** @type {typeof clientLazy} */
+export function lazy(fetchModule, { methods, members }) {
   if (isServer) throw new SpaceBridgeEnvironmentError();
-  clientLazy();
+  return clientLazy(fetchModule, { methods, members });
 }
 export function queue() {
   if (isServer) throw new SpaceBridgeEnvironmentError();
