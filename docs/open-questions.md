@@ -4,6 +4,7 @@
 
 ### [define](./client-signature.md#define)
 * Is there a way to avoid naming functions twice (once as a named export and once to register it with SpaceBridge)
+  - perhaps we define entire modules at import? That seems clunky though
 * Should runLocal return a promise? It's not technologically necessary but might be nice for consistency
 
 ### [networkFirst](./client-signature.md#networkFirst)
