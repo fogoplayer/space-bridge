@@ -10,6 +10,7 @@
 ### [networkFirst](./client-signature.md#networkFirst)
 * Should networkFirst & lazy expose their download progress? (https://javascript.info/fetch-progress)
 * How should we handle errors if the user loses connection before the download is complete?
+* What should happen if the user calls `runLocal` before it's loaded in?
 
 ### [queue](./client-signature.md#queue)
 * What should queue return if it has been successfully added to the BackgroundSync but hasn't actually been sent?
