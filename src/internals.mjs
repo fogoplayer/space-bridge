@@ -16,8 +16,22 @@ export let spaceBridgeGlobalOptions = {
   weights: { network: 1, specs: 1, cost: 1, performance: 1 },
 };
 
+///////////////////////////////////////////////////////////////////////////////
+// this section is just temporary before we're really able to get into the
+// contents of shouldRunLocally
+/** @type {"remote" | "local"} */
+let environment = "local";
+
+/**
+ * @param {typeof environment} env
+ */
+export function setEnvironment(env) {
+  environment = env;
+}
+///////////////////////////////////////////////////////////////////////////////
+
 export function shouldRunLocally() {
-  return true;
+  return environment === "local";
 }
 
 /**
