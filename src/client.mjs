@@ -16,28 +16,29 @@ import {
  * @returns {BridgedFunction<F2>}
  */
 export function clientDefine(name, func) {
-  const bridgedFunction = Object.assign(
+  /** @type {PromiseWrappedFunction} */
+  let bridgedFunction = async function (...args) {
+    // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
+    if (shouldRunLocally()) return await this.runLocal(...args);
+
+    // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
+    return await this.runRemote(...args);
+  };
+
+  const otherMethods = {
+    runLocal: func,
     /** @type {PromiseWrappedFunction} */
-    (
-      async function (...args) {
-        // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
-        if (shouldRunLocally()) return await this.runLocal(...args);
+    runRemote: async (...args) => {
+      return await executeFunctionRemotely(name, ...args);
+    },
+  };
 
-        // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
-        return await this.runRemote(...args);
-      }
-    ),
-    // other methods
-    {
-      runLocal: func,
-      /** @type {PromiseWrappedFunction} */
-      runRemote: async (...args) => {
-        return await executeFunctionRemotely(name, ...args);
-      },
-    }
-  );
+  // link up bridged function and subroutines
+  bridgedFunction = bridgedFunction.bind(otherMethods);
+  bridgedFunction = Object.assign(bridgedFunction, otherMethods);
 
-  return bridgedFunction.bind(bridgedFunction);
+  // @ts-ignore
+  return bridgedFunction;
 }
 
 /**
