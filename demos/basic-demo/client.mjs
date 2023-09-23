@@ -1,9 +1,9 @@
 import { setOptions } from "./src/index.mjs";
-import { sum } from "./library.mjs";
+import { hello } from "./library.mjs";
 
-setOptions({ baseUrl: "https://my-app.com" });
-const total = sum(3.14, 6.28);
-const total2 = sum.runLocal(3.14, 6.28);
+setOptions({});
 
-console.log(await total);
-console.log(total2);
+document.querySelector("form").onsubmit = async function getMessage(e) {
+  e.preventDefault();
+  document.querySelector("output").value = await hello();
+};

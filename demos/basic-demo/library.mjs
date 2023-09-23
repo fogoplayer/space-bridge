@@ -1,3 +1,8 @@
 import { define } from "../../src/index.mjs";
 
-export const sum = define("sum", (num1, num2) => num1 + num2);
+const environment =
+  typeof process !== "undefined" || typeof window === "undefined"
+    ? "server"
+    : "client";
+
+export const hello = define("hello", () => "Hello from the " + environment);

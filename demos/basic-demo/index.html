@@ -11,6 +11,26 @@
 
 <body>
   Basic Demo
+  <form>
+    <fieldset>
+      <legend>Choose an execution environment</legend>
+      <label>
+        <input type="radio" name="environment" id="dynamic" value="dynamic" disabled>
+        Dynamic (coming soon)
+      </label>
+      <label>
+        <input type="radio" name="environment" id="local" value="local">
+        Local
+      </label>
+      <label>
+        <input type="radio" name="environment" id="remote" value="remote">
+        Remote
+      </label>
+    </fieldset>
+    <button>Send request</button>
+    <output name="response" for="dynamic local remote" id="response"></output>
+  </form>
+
 </body>
 
 </html>
