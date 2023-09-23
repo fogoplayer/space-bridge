@@ -1,4 +1,3 @@
-import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import {
   executeFunctionRemotely,
   functionMap,
