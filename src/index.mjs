@@ -11,7 +11,8 @@ import { functionMap } from "./internals.mjs";
 import { serverCreateMiddleware, serverConvertFunction } from "./server.mjs";
 
 // if we do have process or don't have a window
-const isServer = typeof process !== undefined || typeof window === undefined;
+const isServer =
+  typeof process !== "undefined" || typeof window === "undefined";
 
 /**
  * A higher-order function that wraps function definitions to use SpaceBridge
