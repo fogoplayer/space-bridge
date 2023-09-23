@@ -58,8 +58,7 @@ export function serverCreateMiddleware(...args) {
    * @param {import("express").NextFunction} next
    */
   return async (req, res, next) => {
-    if (req.path.substring(0, prefixLen) !== prefix) {
-      console.log("next");
+    if (req.path.substring(1, prefixLen + 1) !== prefix) {
       next();
       return;
     }
@@ -71,7 +70,7 @@ export function serverCreateMiddleware(...args) {
       return;
     }
 
-    const name = req.path.substring(prefixLen);
+    const { name, args } = req.body;
     while (true) {
       const func = functionMap[name];
       if (!func) {
@@ -87,14 +86,12 @@ export function serverCreateMiddleware(...args) {
 
       // TODO POST
       if (req.method === "POST") {
-        console.log("ReqBody:", req.body);
         // TODO find ways to encode classes/objects with methods in our args/responses
-        const { name, args } = JSON.parse(req.body);
         // TODO support options?
         const callback = functionMap[name]?.callback;
 
         if (callback) {
-          res.send(await callback(...args));
+          res.send({ returnVal: await callback(...args) });
           return;
         } else {
           res.sendStatus(404);

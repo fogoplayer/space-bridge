@@ -49,10 +49,15 @@ export async function executeFunctionRemotely(name, ...args) {
   const response = await fetch(baseUrl + prefix, {
     method: "POST",
     body: JSON.stringify(Object.assign(body || {}, { name, args })),
-    headers: new Headers(headers),
+    headers: new Headers(
+      Object.assign(headers || {}, {
+        "content-type": "application/json",
+      })
+    ),
   });
 
-  return await response.json();
+  const { returnVal } = await response.json();
+  return returnVal;
 }
 
 /**

@@ -9,6 +9,12 @@
       "name": "Run npm test",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "npm run start --prefix demos/basic-demo",
+      "name": "Start demo server",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }
