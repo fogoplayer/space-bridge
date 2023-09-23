@@ -1,4 +1,5 @@
 import { clientDefine as define } from "../src/client.mjs";
+import { jest } from "@jest/globals";
 
 const _import = jest.fn((address) => {
   return {
@@ -11,15 +12,15 @@ const _import = jest.fn((address) => {
 
 describe("Client: define", () => {
   it("returns an async function", () => {
-    test.todo("needs to be implemented"); // TODO does this make sure it's a promise?
     expect(define("test1", () => "hello world")()).resolves.toBe("hello world");
   });
 
   it("does not change the function's behavior", () => {
     const initialFunction = (a, b) => a + b;
     const bridgedFunction = define("test2", initialFunction);
-    expect(bridgedFunction(8, 13)).resolves.toBe(21);
-    expect(bridgedFunction.arguments).toBe(initialFunction.arguments);
+    const args = [8, 13];
+
+    expect(bridgedFunction(...args)).resolves.toBe(initialFunction(...args));
   });
 
   it("can be called locally", () => {
@@ -35,131 +36,73 @@ describe("Client: define", () => {
     expect(define("test5", () => "hello other world")).toThrow();
   });
 
-  it("throws a collision error if a method is defined twice in two different files", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo(
+    "throws a collision error if a method is defined twice in two different files"
+  ); // TODO
 
-  it("overrides options as expected", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("overrides options as expected"); // TODO
 
-  it("unsets options as expected", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("unsets options as expected"); // TODO
 });
 
 describe("Client: init", () => {
-  it("options function as expected", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("options function as expected"); // TODO
 
-  it("throws an error in the wrong environment", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("throws an error in the wrong environment"); // TODO
 });
 
 describe("Client: networkFirst", () => {
-  it("calls remotely before load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("calls remotely before load"); // TODO
 
-  it("cannot be called locally before load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("cannot be called locally before load"); // TODO
 
-  it("can be called remotely after load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("can be called remotely after load"); // TODO
 
-  it("can be called locally after load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("can be called locally after load"); // TODO
 
-  it("uses the signature to generate the module", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("uses the signature to generate the module"); // TODO
 
-  it("allows access to members", () => {
-    test.todo("needs to be implemented"); // todo
-  });
+  test.todo("allows access to members"); // todo
 
-  it("allows access to methods", () => {
-    test.todo("needs to be implemented"); // todo
-  });
+  test.todo("allows access to methods"); // todo
 
-  it("throws an error in the wrong environment", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("throws an error in the wrong environment"); // TODO
 
-  it("throws a collision error if a method is already defined", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("throws a collision error if a method is already defined"); // TODO
 });
 
 describe("Client: lazy", () => {
-  it("does not load the module until triggered", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("does not load the module until triggered"); // TODO
 
-  it("loads the moduel when triggered", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("loads the moduel when triggered"); // TODO
 
-  it("calls remotely before load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("calls remotely before load"); // TODO
 
-  it("cannot be called locally before load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("cannot be called locally before load"); // TODO
 
-  it("can be called remotely after load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("can be called remotely after load"); // TODO
 
-  it("can be called locally after load", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("can be called locally after load"); // TODO
 
-  it("uses the signature to generate the module", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("uses the signature to generate the module"); // TODO
 
-  it("allows access to members", () => {
-    test.todo("needs to be implemented"); // todo
-  });
+  test.todo("allows access to members"); // todo
 
-  it("allows access to methods", () => {
-    test.todo("needs to be implemented"); // todo
-  });
+  test.todo("allows access to methods"); // todo
 
-  it("throws an error in the wrong environment", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("throws an error in the wrong environment"); // TODO
 
-  it("throws a collision error if a method is already defined", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("throws a collision error if a method is already defined"); // TODO
 });
 
 describe("Client: queue", () => {
-  it("works in HTTP", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("works in HTTP"); // TODO
 
-  it("works in HTTPS (non-PWA)", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("works in HTTPS (non-PWA)"); // TODO
 
-  it("works in an online PWA", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("works in an online PWA"); // TODO
 
-  it("registers a service worker", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("registers a service worker"); // TODO
 
-  it("works in an offline PWA", () => {
-    test.todo("needs to be implemented"); // TODO
-  });
+  test.todo("works in an offline PWA"); // TODO
 });
