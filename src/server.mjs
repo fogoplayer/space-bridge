@@ -86,6 +86,20 @@ export function serverCreateMiddleware(...args) {
       }
 
       // TODO POST
+      if (req.method === "POST") {
+        console.log("ReqBody:", req.body);
+        // TODO find ways to encode classes/objects with methods in our args/responses
+        const { name, args } = JSON.parse(req.body);
+        // TODO support options?
+        const callback = functionMap[name]?.callback;
+
+        if (callback) {
+          res.send(await callback(...args));
+          return;
+        } else {
+          res.sendStatus(404);
+        }
+      }
       // TODO GET
       // TODO PUT
     }
