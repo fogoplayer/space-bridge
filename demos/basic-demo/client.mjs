@@ -1,4 +1,4 @@
-import { setOptions } from "../../src/index.mjs";
+import { setOptions } from "./src/index.mjs";
 import { sum } from "./library.mjs";
 
 setOptions({ baseUrl: "https://my-app.com" });

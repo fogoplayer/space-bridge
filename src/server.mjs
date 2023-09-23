@@ -48,8 +48,6 @@ export function serverCreateMiddleware(...args) {
   const { prefix, stats } = deepAssign(DEFAULT_SETTINGS, args[args.length - 1]);
   const prefixLen = prefix.length;
 
-  console.log(prefix);
-
   const imports = /** @type {Promise<any>[]} */ (
     /** @type {unknown} */ (args.slice(-1))
   );
@@ -60,7 +58,11 @@ export function serverCreateMiddleware(...args) {
    * @param {import("express").NextFunction} next
    */
   return async (req, res, next) => {
-    if (req.path.substring(0, prefixLen) !== prefix) next();
+    if (req.path.substring(0, prefixLen) !== prefix) {
+      console.log("next");
+      next();
+      return;
+    }
 
     // TODO get list of method names
 
