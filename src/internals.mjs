@@ -11,6 +11,7 @@ export let functionMap = {};
 /** @type {InitOptions} */
 export let spaceBridgeGlobalOptions = {
   baseUrl: "/",
+  prefix: "spacebridge",
   body: {},
   headers: {},
   weights: { network: 1, specs: 1, cost: 1, performance: 1 },
@@ -43,7 +44,15 @@ export function shouldRunLocally() {
  * @returns {Promise<any>}
  */
 export async function executeFunctionRemotely(name, ...args) {
-  return await Promise.resolve("foobar");
+  const { baseUrl, prefix, body, headers } = spaceBridgeGlobalOptions;
+
+  const response = await fetch(baseUrl + prefix, {
+    method: "POST",
+    body: JSON.stringify(Object.assign(body || {}, { name, args })),
+    headers: new Headers(headers),
+  });
+
+  return await response.json();
 }
 
 /**

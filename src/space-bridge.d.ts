@@ -6,8 +6,8 @@ interface InitOptions {
   weights: {
     [key in Factor]: number;
   };
-  headers: Object;
-  body: Object;
+  headers?: HeadersInit;
+  body?: Object;
 }
 
 type DefineOptions = InitOptions & {
