@@ -1,5 +1,8 @@
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
-import { functionMap, isSettled } from "./internals.mjs";
+import { deepAssign, functionMap, isSettled } from "./internals.mjs";
+
+/** @type {SpaceBridgeOptions} */
+const DEFAULT_SETTINGS = { prefix: "spacebridge", stats: true };
 
 /**
  * Wraps the function in a promise for server use
@@ -42,10 +45,10 @@ export function serverConvertFunction(name, func) {
  * @returns
  */
 export function serverCreateMiddleware(...args) {
-  const { prefix, stats } = /** @type {SpaceBridgeOptions} */ (
-    /** @type {unknown} */ (args[args.length - 1])
-  );
+  const { prefix, stats } = deepAssign(DEFAULT_SETTINGS, args[args.length - 1]);
   const prefixLen = prefix.length;
+
+  console.log(prefix);
 
   const imports = /** @type {Promise<any>[]} */ (
     /** @type {unknown} */ (args.slice(-1))

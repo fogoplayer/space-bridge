@@ -53,3 +53,46 @@ export async function isSettled(promise) {
     (val) => val !== "pending"
   );
 }
+
+/**
+ * Takes in two objects and does a deep merge between the two
+ *
+ * @template {any} O1
+ * @template {any} O2
+ * @param {O1} obj1
+ * @param {O2} obj2
+ * @returns {O1 & O2}
+ */
+export function deepAssign(obj1, obj2) {
+  const obj1Keys = /** @type {[any]} */ (Object.keys(obj1));
+  const obj2Keys = /** @type {[any]} */ (Object.keys(obj2));
+  const keySet = new Set([...obj1Keys, ...obj2Keys]);
+
+  /** @type {O1 & O2} */
+  (obj1);
+
+  keySet.forEach((key) => {
+    // @ts-ignore only defined on 1
+    if (obj1[key] !== undefined && obj2[key] === undefined) {
+      return;
+    }
+
+    // @ts-ignore only defined on 2
+    if (obj1[key] === undefined && obj2[key] !== undefined) {
+      obj1[key] = obj2[key];
+    }
+
+    // defined on both
+    if (typeof obj1[key] !== "object" || typeof obj2[key] !== "object") {
+      obj1[key] = obj2[key];
+    }
+
+    obj1[key] = deepAssign(obj1[key], obj2[key]);
+  });
+
+  return obj1;
+}
+
+export function unset() {
+  return "SPACEBRIDGE_UNSET";
+}
