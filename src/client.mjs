@@ -1,10 +1,20 @@
 import {
+  deepAssign,
   executeFunctionRemotely,
   functionMap,
   isSettled,
   setOptions,
   shouldRunLocally,
 } from "./internals.mjs";
+
+/** @type {InitOptions} */
+const DEFAULT_SETTINGS = {
+  baseUrl: "/",
+  prefix: "spacebridge",
+  body: {},
+  headers: {},
+  weights: { network: 1, specs: 1, cost: 1, performance: 1 },
+};
 
 /**
  * Wraps the function to include balancing logic and
@@ -47,6 +57,7 @@ export function clientDefine(name, func) {
  * @returns {void};
  */
 export function clientSetOptions(options) {
+  options = deepAssign(DEFAULT_SETTINGS, options);
   setOptions(options);
 }
 
