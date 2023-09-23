@@ -16,7 +16,7 @@ import {
  * @returns {BridgedFunction<F2>}
  */
 export function clientDefine(name, func) {
-  return Object.assign(
+  const bridgedFunction = Object.assign(
     /** @type {PromiseWrappedFunction} */
     (
       async function (...args) {
@@ -36,6 +36,8 @@ export function clientDefine(name, func) {
       },
     }
   );
+
+  return bridgedFunction.bind(bridgedFunction);
 }
 
 /**
