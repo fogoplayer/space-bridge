@@ -37,9 +37,9 @@ A function that returns a promise that resolves to the return value of `func`
 `SpaceBridgeCollisionError` - The name of the function being added has already been registered with SpaceBridge
 
 
-### init
+### setOptions
 ```ts
-init({
+setOptions({
   prefix,
   baseUrl,
   weights,
