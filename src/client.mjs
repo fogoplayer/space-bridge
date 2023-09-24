@@ -17,8 +17,7 @@ const DEFAULT_SETTINGS = {
 };
 
 /**
- * Wraps the function to include balancing logic and
- * environment-specific triggers
+ * Wraps the function to include balancing logic and environment-specific triggers
  *
  * @template {Callable} F2
  * @param {string} name
