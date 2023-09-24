@@ -100,6 +100,12 @@ export function deepAssign(obj1, obj2) {
   (obj1);
 
   keySet.forEach((key) => {
+    // @ts-ignore unset
+    if (obj2[key] === unset()) {
+      delete obj1[key];
+      return;
+    }
+
     // @ts-ignore only defined on 1
     if (obj1[key] !== undefined && obj2[key] === undefined) {
       return;
@@ -108,11 +114,13 @@ export function deepAssign(obj1, obj2) {
     // @ts-ignore only defined on 2
     if (obj1[key] === undefined && obj2[key] !== undefined) {
       obj1[key] = obj2[key];
+      return;
     }
 
     // defined on both
     if (typeof obj1[key] !== "object" || typeof obj2[key] !== "object") {
       obj1[key] = obj2[key];
+      return;
     }
 
     obj1[key] = deepAssign(obj1[key], obj2[key]);
