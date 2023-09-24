@@ -1,7 +1,7 @@
 import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
 import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
 import {
-  clientDefine,
+  clientConvertFunction,
   clientLazy,
   clientNetworkFirst,
   clientQueue,
@@ -53,7 +53,7 @@ export function define(
   };
 
   if (isServer) return serverConvertFunction(name, func);
-  else return clientDefine(name, func);
+  else return clientConvertFunction(name, func);
 }
 
 /** @type {typeof clientSetOptions} */

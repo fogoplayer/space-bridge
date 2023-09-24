@@ -24,7 +24,7 @@ const DEFAULT_SETTINGS = {
  * @param {F2} func
  * @returns {BridgedFunction<F2>}
  */
-export function clientDefine(name, func) {
+export function clientConvertFunction(name, func) {
   /** @type {PromiseWrappedFunction} */
   let bridgedFunction = async function (...args) {
     // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
