@@ -8,6 +8,7 @@ import {
   clientSetOptions,
 } from "./client.mjs";
 import { functionMap } from "./internals.mjs";
+export { unset } from "./internals.mjs";
 import { serverCreateMiddleware, serverConvertFunction } from "./server.mjs";
 
 // if we do have process or don't have a window
