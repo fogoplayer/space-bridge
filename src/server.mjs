@@ -41,16 +41,15 @@ export function serverConvertFunction(name, func) {
  * If a request comes in before the imports have resolved, the server will
  * respond as soon as the relevent function is imported.
  *
- * @param {...[...Promise<any>[], SpaceBridgeOptions]} args `import()`s for each of the libraries to be registered, followed by overrides for the global SpaceBridge options
+ * @param {...[...Promise<any>[], SpaceBridgeOptions]} args `import()`s for each of the libraries to be registered,
+ *   followed by overrides for the global SpaceBridge options
  * @returns
  */
 export function serverCreateMiddleware(...args) {
   const { prefix, stats } = deepAssign(DEFAULT_SETTINGS, args[args.length - 1]);
   const prefixLen = prefix.length;
 
-  const imports = /** @type {Promise<any>[]} */ (
-    /** @type {unknown} */ (args.slice(-1))
-  );
+  const imports = /** @type {Promise<any>[]} */ (/** @type {unknown} */ (args.slice(-1)));
 
   /**
    * @param {import("express").Request} req
@@ -58,6 +57,8 @@ export function serverCreateMiddleware(...args) {
    * @param {import("express").NextFunction} next
    */
   return async (req, res, next) => {
+    // await waitForBodyParser(req, res);
+
     if (req.path.substring(1, prefixLen + 1) !== prefix) {
       next();
       return;
@@ -102,3 +103,15 @@ export function serverCreateMiddleware(...args) {
     }
   };
 }
+
+// /**
+//  *
+//  * @param {import("express").Request} req
+//  * @param {import("express").Response} res
+//  */
+// async function waitForBodyParser(req, res) {
+//   await new Promise((resolve, reject) => {
+//     // TODO fix import issue
+//     // import("express").then(express => express.json()(req, res, resolve))
+//   });
+// }
