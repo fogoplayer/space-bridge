@@ -2,37 +2,47 @@
 
 /**
  * Allows the interruption of long-running async processes
- * @returns {[Promise, Function]} [signal, sendSignal]
+ * @returns {[Function, Function]} [signal, sendSignal]
  */
 function createSignal() {
   let sendSignal;
-  let signal = new Promise((res, rej) => {
+
+  const signal = new Promise((res, rej) => {
     sendSignal = res;
-  }).then((resVal) => {
-    throw new Error(resVal);
   });
 
-  return [signal, sendSignal];
+  async function setInterrupt() {
+    const errorVal = await signal;
+    throw new Error(errorVal);
+  }
+
+  return [setInterrupt, sendSignal];
 }
 
 (async () => {
   const [signal, sendSignal] = createSignal();
 
   async function interruptable() {
-    signal;
+    try {
+      signal();
+    } catch (e) {
+      return;
+    }
 
     let i = 0;
     while (true) {
-      await new Promise((res) => setTimeout(res, 1000));
+      await sleep(1000);
       console.log(`ran for ${i++} seconds`);
     }
   }
 
-  interruptable().catch((err) => {
-    console.log("interrupted");
-  });
+  interruptable();
 
   setTimeout(() => {
     sendSignal("hello");
-  }, 1000);
+  }, 5000);
 })();
+
+async function sleep(ms) {
+  return await new Promise((res) => setTimeout(res, ms));
+}
