@@ -20,27 +20,30 @@ function createSignal() {
 }
 
 (async () => {
-  const [signal, sendSignal] = createSignal();
+  const [setInterrupt, sendSignal] = createSignal();
 
   async function interruptable() {
-    try {
-      signal();
-    } catch (e) {
-      return;
-    }
+    return await new Promise(async (res, rej) => {
+      setInterrupt().catch((err) => {
+        rej(err.message);
+      });
 
-    let i = 0;
-    while (true) {
-      await sleep(1000);
-      console.log(`ran for ${i++} seconds`);
-    }
+      let i = 0;
+      while (true) {
+        await sleep(1000);
+        console.log(`ran for ${i++} seconds`);
+      }
+    });
   }
 
-  interruptable();
+  interruptable().catch((err) => {
+    console.log(`Execution interrupted: ${err.message}`);
+  });
 
   setTimeout(() => {
     sendSignal("hello");
   }, 5000);
+  await sleep(10000);
 })();
 
 async function sleep(ms) {
