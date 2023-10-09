@@ -4,12 +4,20 @@ import { setEnvironment } from "./src/internals.mjs";
 
 setOptions({});
 
+let env = "dynamic";
+
 document.querySelector("form").onchange = function (e) {
   console.log(e.target.value);
-  setEnvironment(e.target.value);
+  env = e.target.value;
 };
 
 document.querySelector("form").onsubmit = async function getMessage(e) {
   e.preventDefault();
-  document.querySelector("output").value = await hello();
+  if (env === "dynamic") {
+    document.querySelector("output").value = await hello();
+  } else if (env === "local") {
+    document.querySelector("output").value = await hello.runLocal();
+  } else if (env === "remote") {
+    document.querySelector("output").value = await hello.runRemote();
+  }
 };

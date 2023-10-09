@@ -3,6 +3,7 @@ import {
   executeFunctionRemotely,
   functionMap,
   isSettled,
+  setEnvironment,
   setOptions,
   shouldRunLocally,
 } from "./internals.mjs";
@@ -16,6 +17,8 @@ const DEFAULT_SETTINGS = {
   weights: { network: 1, specs: 1, cost: 1, performance: 1 },
 };
 
+const RACE_FACTOR = 5;
+
 /**
  * Wraps the function to include balancing logic and environment-specific triggers
  *
@@ -27,6 +30,21 @@ const DEFAULT_SETTINGS = {
 export function clientConvertFunction(name, func) {
   /** @type {PromiseWrappedFunction} */
   let bridgedFunction = async function (...args) {
+    if (Math.random() < 1 / RACE_FACTOR) {
+      const localPromise = (async () => {
+        const val = await this.runLocal(...args);
+        return [val, "local"];
+      })();
+      const remotePromise = (async () => {
+        const val = await this.runRemote(...args);
+        return [val, "remote"];
+      })();
+      const [val, env] = await Promise.race([localPromise, remotePromise]);
+      setEnvironment(env);
+      console.log(`${env} won the race`);
+      return val;
+    }
+
     // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
     if (shouldRunLocally()) return await this.runLocal(...args);
 
