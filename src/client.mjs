@@ -28,9 +28,31 @@ const RACE_FACTOR = 5;
  * @returns {BridgedFunction<F2>}
  */
 export function clientConvertFunction(name, func) {
+  /** @type {"local" | "remote" | undefined} */
+  let environment = undefined;
+
   /** @type {PromiseWrappedFunction} */
   let bridgedFunction = async function (...args) {
-    if (Math.random() < 1 / RACE_FACTOR) {
+    if (environment === undefined || Math.random() < 1 / RACE_FACTOR) {
+      // @ts-ignore  shhh TS... `runRace` will be there at runtime, I promise
+      return await this.runRace(...args);
+    }
+
+    // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
+    if (environment === "local") return await this.runLocal(...args);
+
+    // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
+    return await this.runRemote(...args);
+  };
+
+  const otherMethods = {
+    runLocal: func,
+    /** @type {PromiseWrappedFunction} */
+    runRemote: async (...args) => {
+      return await executeFunctionRemotely(name, ...args);
+    },
+    /** @type {PromiseWrappedFunction} */
+    runRace: async function (...args) {
       const localPromise = (async () => {
         performance.mark("started-local");
         const val = await this.runLocal(...args);
@@ -48,23 +70,9 @@ export function clientConvertFunction(name, func) {
         return [val, "remote"];
       })();
       const [val, env] = await Promise.race([localPromise, remotePromise]);
-      setEnvironment(env);
+      environment = env;
       console.log(`${env} won the race`);
       return val;
-    }
-
-    // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
-    if (shouldRunLocally()) return await this.runLocal(...args);
-
-    // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
-    return await this.runRemote(...args);
-  };
-
-  const otherMethods = {
-    runLocal: func,
-    /** @type {PromiseWrappedFunction} */
-    runRemote: async (...args) => {
-      return await executeFunctionRemotely(name, ...args);
     },
   };
 

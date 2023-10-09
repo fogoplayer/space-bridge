@@ -20,11 +20,13 @@ export let spaceBridgeGlobalOptions = {
 ///////////////////////////////////////////////////////////////////////////////
 // this section is just temporary before we're really able to get into the
 // contents of shouldRunLocally
-/** @type {"remote" | "local"} */
-let environment = "local";
+/** @typedef {"remote" | "local"} Environment*/
+
+/** @type {Environment?} */
+let environment;
 
 /**
- * @param {typeof environment} env
+ * @param {Environment} env
  */
 export function setEnvironment(env) {
   environment = env;
@@ -77,9 +79,7 @@ export function setOptions(options) {
 export async function isSettled(promise) {
   // We put `pending` promise after the promise to test,
   // which forces .race to test `promise` first
-  return await Promise.race([promise, "pending"]).then(
-    (val) => val !== "pending"
-  );
+  return await Promise.race([promise, "pending"]).then((val) => val !== "pending");
 }
 
 /**
