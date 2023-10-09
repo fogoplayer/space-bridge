@@ -54,18 +54,18 @@ export function clientConvertFunction(name, func) {
     /** @type {PromiseWrappedFunction} */
     runRace: async function (...args) {
       const localPromise = (async () => {
-        performance.mark("started-local");
+        performance?.mark("started-local");
         const val = await this.runLocal(...args);
-        performance.mark("finished-local");
-        const localMeasure = performance.measure("local-duration", "started-local", "finished-local");
+        performance?.mark("finished-local");
+        const localMeasure = performance?.measure("local-duration", "started-local", "finished-local");
         console.log("local duration:", localMeasure.duration);
         return [val, "local"];
       })();
       const remotePromise = (async () => {
-        performance.mark("started-remote");
+        performance?.mark("started-remote");
         const val = await this.runRemote(...args);
-        performance.mark("finished-remote");
-        const remoteMeasure = performance.measure("remote-duration", "started-remote", "finished-remote");
+        performance?.mark("finished-remote");
+        const remoteMeasure = performance?.measure("remote-duration", "started-remote", "finished-remote");
         console.log("remote duration:", remoteMeasure.duration);
         return [val, "remote"];
       })();
