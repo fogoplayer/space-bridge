@@ -14,7 +14,7 @@ export let spaceBridgeGlobalOptions = {
   prefix: "spacebridge",
   body: {},
   headers: {},
-  weights: { network: 1, specs: 1, cost: 1, performance: 1 },
+  bias: 0,
 };
 
 ///////////////////////////////////////////////////////////////////////////////

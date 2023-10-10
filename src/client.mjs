@@ -15,7 +15,7 @@ const DEFAULT_SETTINGS = {
   prefix: "spacebridge",
   body: {},
   headers: {},
-  weights: { network: 1, specs: 1, cost: 1, performance: 1 },
+  bias: 0,
 };
 
 const RACE_FACTOR = 5;
