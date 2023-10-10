@@ -4,7 +4,8 @@
   "description": "SpaceBridge is a research project by Zarin Loosli; a library that serves as a load balancer for code that can be executed client-side or server-side.",
   "main": "src/index.mjs",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "typecheck": "tsc"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.5",
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "typescript": "^5.2.2"
   }
 }
