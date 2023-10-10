@@ -132,3 +132,41 @@ export function deepAssign(obj1, obj2) {
 export function unset() {
   return "SPACEBRIDGE_UNSET";
 }
+
+/**
+ * Wraps a function with performance measurements
+ *
+ * @param {string} name the event name for the performance API
+ * @param {Function} func the function to wrap
+ * @param  {...any} args the arguments to pass to the function
+ * @returns {any} the return value of the function
+ */
+export function performanceWrapperSync(name, func, ...args) {
+  if (!window.performance) return func(...args);
+
+  performance?.mark("started-" + name);
+  const val = func(...args);
+  performance?.mark("finished-" + name);
+  const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
+  console.log("remote duration:", remoteMeasure.duration);
+  return val;
+}
+
+/**
+ * Wraps a function with performance measurements
+ *
+ * @param {string} name the event name for the performance API
+ * @param {Function} func the function to wrap
+ * @param  {...any} args the arguments to pass to the function
+ * @returns {Promise<any>} the return value of the function
+ */
+export async function performanceWrapperAsync(name, func, ...args) {
+  if (!window.performance) return await func(...args);
+
+  performance?.mark("started-" + name);
+  const val = await func(...args);
+  performance?.mark("finished-" + name);
+  const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
+  console.log("remote duration:", remoteMeasure.duration);
+  return val;
+}
