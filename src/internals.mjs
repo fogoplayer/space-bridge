@@ -40,6 +40,8 @@ export function shouldRunLocally() {
 /**
  * Executes the named function remotely
  * // TODO pass in function instead of name, use generics?
+ * // TODO handle errors
+ * // TODO handle leading/trailing slashes in baseURL and prefix
  *
  * @param {string} name
  * @param  {...any} args
