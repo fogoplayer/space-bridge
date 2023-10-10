@@ -34,20 +34,17 @@ type SpaceBridgeOptions = {
 
 type Callable = (...args: any[]) => any;
 
-type PromiseWrappedFunction<T extends Callable = Callable> = (
-  ...args: Parameters<T>
-) => Promise<ReturnType<T>>;
+type PromiseWrappedFunction<T extends Callable = Callable> = (...args: Parameters<T>) => Promise<ReturnType<T>>;
 
-type BridgedFunction<T extends Callable = Callable> =
-  PromiseWrappedFunction<T> & {
-    runLocal: T;
-    runRemote: PromiseWrappedFunction<T>;
-  };
+type BridgedFunction<T extends Callable = Callable> = PromiseWrappedFunction<T> & {
+  runLocal: T;
+  runLocalAsync: PromiseWrappedFunction<T>;
+  runRemote: PromiseWrappedFunction<T>;
+  runRace: PromiseWrappedFunction<T>;
+};
 
 type Module = { [key: string]: any | ((...args: any[]) => any) };
 
 type PromiseWrappedModule<M extends Module> = {
-  [K in keyof M]:
-    | Promise<M[K]>
-    | ((...args: Parameters<M[K]>) => Promise<ReturnType<M[K]>>);
+  [K in keyof M]: Promise<M[K]> | ((...args: Parameters<M[K]>) => Promise<ReturnType<M[K]>>);
 };

@@ -32,22 +32,39 @@ export function clientConvertFunction(name, func) {
   /** @type {"local" | "remote" | undefined} */
   let environment = undefined;
 
-  /** @type {PromiseWrappedFunction} */
+  /**
+   * Determines which execution environment to use.
+   *
+   * 1. If the user is offline, run locally
+   * 2. For some fraction of calls, run both and store which one is faster
+   * 3. For the rest of the calls, use the one determined to be faster
+   * 4. If the faster one fails, use the other one
+   *
+   * @type {PromiseWrappedFunction}
+   * @this {BridgedFunction<F2>}
+   *
+   * @params {...Parameters<F2>} args
+   */
   let bridgedFunction = async function (...args) {
+    if (window.navigator.onLine === false) return await this.runLocal(...args);
+
     if (environment === undefined || Math.random() < 1 / RACE_FACTOR) {
-      // @ts-ignore  shhh TS... `runRace` will be there at runtime, I promise
       return await this.runRace(...args);
     }
 
-    // @ts-ignore  shhh TS... `runLocal` will be there at runtime, I promise
-    if (environment === "local") return await this.runLocal(...args);
+    if (environment === "local") {
+      return await this.runLocalAsync(...args).catch((e) => this.runRemote(...args));
+    }
 
-    // @ts-ignore  shhh TS... `runRemote` will be there at runtime, I promise
-    return await this.runRemote(...args);
+    return await this.runRemote(...args).catch((e) => this.runLocal(...args));
   };
 
   const otherMethods = {
     runLocal: func,
+    /** @type {PromiseWrappedFunction} */
+    runLocalAsync: async (...args) => {
+      return await func(...args);
+    },
     /** @type {PromiseWrappedFunction} */
     runRemote: async (...args) => {
       return await executeFunctionRemotely(name, ...args);
