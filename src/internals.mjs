@@ -14,7 +14,7 @@ export let spaceBridgeGlobalOptions = {
   prefix: "spacebridge",
   body: {},
   headers: {},
-  bias: 0,
+  bias: 1,
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,17 +141,17 @@ export function unset() {
  * @param {string} name the event name for the performance API
  * @param {Function} func the function to wrap
  * @param  {...any} args the arguments to pass to the function
- * @returns {any} the return value of the function
+ * @returns {[any, Number]} the return value of the function and the number of ms it took to run; duration is -1 if performance measurement is not supported
  */
 export function performanceWrapperSync(name, func, ...args) {
-  if (!window.performance) return func(...args);
+  if (!window.performance) return [func(...args), -1];
 
   performance?.mark("started-" + name);
   const val = func(...args);
   performance?.mark("finished-" + name);
   const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
   console.log("remote duration:", remoteMeasure.duration);
-  return val;
+  return [val, remoteMeasure.duration];
 }
 
 /**
@@ -160,15 +160,16 @@ export function performanceWrapperSync(name, func, ...args) {
  * @param {string} name the event name for the performance API
  * @param {Function} func the function to wrap
  * @param  {...any} args the arguments to pass to the function
- * @returns {Promise<any>} the return value of the function
+ * @returns {Promise<[any, Number]>} the return value of the function and the number of ms it took to run; duration is -1 if performance measurement is not supported
  */
 export async function performanceWrapperAsync(name, func, ...args) {
-  if (!window.performance) return await func(...args);
+  // TODO just use a less precise timer if performance is not supported
+  if (!window.performance) return [await func(...args), -1];
 
   performance?.mark("started-" + name);
   const val = await func(...args);
   performance?.mark("finished-" + name);
   const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
   console.log("remote duration:", remoteMeasure.duration);
-  return val;
+  return [val, remoteMeasure.duration];
 }

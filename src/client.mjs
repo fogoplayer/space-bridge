@@ -7,6 +7,7 @@ import {
   setEnvironment,
   setOptions,
   shouldRunLocally,
+  spaceBridgeGlobalOptions,
 } from "./internals.mjs";
 
 /** @type {InitOptions} */
@@ -15,7 +16,7 @@ const DEFAULT_SETTINGS = {
   prefix: "spacebridge",
   body: {},
   headers: {},
-  bias: 0,
+  bias: 1,
 };
 
 const RACE_FACTOR = 5;
@@ -31,6 +32,11 @@ const RACE_FACTOR = 5;
 export function clientConvertFunction(name, func) {
   /** @type {"local" | "remote" | undefined} */
   let environment = undefined;
+
+  /** @type {Number} */
+  let localRunTime = Infinity;
+  /** @type {Number} */
+  let remoteRunTime = Infinity;
 
   /**
    * Determines which execution environment to use.
@@ -48,11 +54,21 @@ export function clientConvertFunction(name, func) {
   let bridgedFunction = async function (...args) {
     if (window.navigator.onLine === false) return await this.runLocal(...args);
 
-    if (environment === undefined || Math.random() < 1 / RACE_FACTOR) {
+    if (localRunTime === Infinity || remoteRunTime === Infinity || Math.random() < 1 / RACE_FACTOR) {
       return await this.runRace(...args);
     }
 
-    if (environment === "local") {
+    const { bias } = spaceBridgeGlobalOptions;
+
+    console.log(
+      "localRunTime:",
+      localRunTime,
+      "localRunTime  * bias:",
+      localRunTime * (bias < 0 ? -bias : 1 / bias),
+      "remoteRunTime:",
+      remoteRunTime
+    );
+    if (localRunTime * (bias < 0 ? -bias : 1 / bias) < remoteRunTime) {
       return await this.runLocalAsync(...args).catch((e) => this.runRemote(...args));
     }
 
@@ -72,11 +88,13 @@ export function clientConvertFunction(name, func) {
     /** @type {PromiseWrappedFunction} */
     runRace: async function (...args) {
       const localPromise = (async () => {
-        const val = await performanceWrapperAsync("local", this.runLocal, ...args);
+        const [val, duration] = await performanceWrapperAsync("local", this.runLocal, ...args);
+        localRunTime = duration;
         return [val, "local"];
       })();
       const remotePromise = (async () => {
-        const val = await performanceWrapperAsync("local", this.runRemote, ...args);
+        const [val, duration] = await performanceWrapperAsync("local", this.runRemote, ...args);
+        remoteRunTime = duration;
         return [val, "remote"];
       })();
       const [val, env] = await Promise.race([localPromise, remotePromise]);
