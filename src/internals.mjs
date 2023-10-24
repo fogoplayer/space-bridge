@@ -70,6 +70,7 @@ export async function executeFunctionRemotely(name, ...args) {
  * @returns {void}
  */
 export function setOptions(options) {
+  // TODO don't allow (-1)-(1) bias
   spaceBridgeGlobalOptions = Object.assign(spaceBridgeGlobalOptions, options); // TODO add deep assignment
 }
 
@@ -81,7 +82,9 @@ export function setOptions(options) {
 export async function isSettled(promise) {
   // We put `pending` promise after the promise to test,
   // which forces .race to test `promise` first
-  return await Promise.race([promise, "pending"]).then((val) => val !== "pending");
+  return await Promise.race([promise, "pending"]).then(
+    (val) => val !== "pending"
+  );
 }
 
 /**
@@ -149,7 +152,11 @@ export function performanceWrapperSync(name, func, ...args) {
   performance?.mark("started-" + name);
   const val = func(...args);
   performance?.mark("finished-" + name);
-  const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
+  const remoteMeasure = performance?.measure(
+    name + "-duration",
+    "started-" + name,
+    "finished-" + name
+  );
   console.log("remote duration:", remoteMeasure.duration);
   return [val, remoteMeasure.duration];
 }
@@ -169,7 +176,11 @@ export async function performanceWrapperAsync(name, func, ...args) {
   performance?.mark("started-" + name);
   const val = await func(...args);
   performance?.mark("finished-" + name);
-  const remoteMeasure = performance?.measure(name + "-duration", "started-" + name, "finished-" + name);
+  const remoteMeasure = performance?.measure(
+    name + "-duration",
+    "started-" + name,
+    "finished-" + name
+  );
   console.log("remote duration:", remoteMeasure.duration);
   return [val, remoteMeasure.duration];
 }

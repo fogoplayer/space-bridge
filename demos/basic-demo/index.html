@@ -48,7 +48,7 @@
     output {
       display: block;
       padding: 0.5rem;
-      border: 1px solid #ccc;
+      border: 1px solid #cccccc;
       font-family: monospace;
     }
 
@@ -82,8 +82,15 @@
         <input type="radio" name="environment" id="remote" value="remote">
         Remote
       </label>
-      <button>Send request</button>
     </fieldset>
+    <fieldset class="bias">
+      <legend>Set a bias</legend>
+      Server
+      <input type="range" name="bias-range" id="bias-range" min="-20" max="20" step=".1">
+      Client
+      <input type="number" name="bias-text" id="bias-text" min="-20" max="20" step=".1">
+    </fieldset>
+    <button>Send request</button>
     <output name="response" for="dynamic local remote" id="response"></output>
   </form>
   <h2><code>Library Code</code></h2>
