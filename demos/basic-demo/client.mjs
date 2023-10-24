@@ -1,6 +1,5 @@
 import { setOptions } from "./src/index.mjs";
 import { hello } from "./library.mjs";
-import { setEnvironment } from "./src/internals.mjs";
 
 let env = "dynamic";
 

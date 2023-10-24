@@ -1,12 +1,9 @@
 import {
   deepAssign,
   executeFunctionRemotely,
-  functionMap,
   isSettled,
   performanceWrapperAsync,
-  setEnvironment,
   setOptions,
-  shouldRunLocally,
   spaceBridgeGlobalOptions,
 } from "./internals.mjs";
 
