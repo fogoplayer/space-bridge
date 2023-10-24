@@ -17,26 +17,6 @@ export let spaceBridgeGlobalOptions = {
   bias: 1,
 };
 
-///////////////////////////////////////////////////////////////////////////////
-// this section is just temporary before we're really able to get into the
-// contents of shouldRunLocally
-/** @typedef {"remote" | "local"} Environment*/
-
-/** @type {Environment?} */
-let environment;
-
-/**
- * @param {Environment} env
- */
-export function setEnvironment(env) {
-  environment = env;
-}
-///////////////////////////////////////////////////////////////////////////////
-
-export function shouldRunLocally() {
-  return environment === "local";
-}
-
 /**
  * Executes the named function remotely
  * // TODO pass in function instead of name, use generics?
@@ -90,48 +70,51 @@ export async function isSettled(promise) {
 /**
  * Takes in two objects and does a deep merge between the two
  *
- * @template {any} O1
- * @template {any} O2
+ * @template {Object} O1
+ * @template {Object} O2
  * @param {O1} obj1
  * @param {O2} obj2
  * @returns {O1 & O2}
  */
 export function deepAssign(obj1, obj2) {
-  const obj1Keys = /** @type {[any]} */ (Object.keys(obj1));
-  const obj2Keys = /** @type {[any]} */ (Object.keys(obj2));
+  const obj1Keys = /** @type {[keyof O1]} */ (Object.keys(obj1));
+  const obj2Keys = /** @type {[keyof O2]} */ (Object.keys(obj2));
   const keySet = new Set([...obj1Keys, ...obj2Keys]);
 
-  /** @type {O1 & O2} */
-  (obj1);
+  const untypedObj1 = /** @type {any} */ (obj1);
+  const untypedObj2 = /** @type {any} */ (obj2);
 
   keySet.forEach((key) => {
     // @ts-ignore unset
     if (obj2[key] === unset()) {
-      delete obj1[key];
+      delete untypedObj1[key];
       return;
     }
 
     // @ts-ignore only defined on 1
-    if (obj1[key] !== undefined && obj2[key] === undefined) {
+    if (untypedObj1[key] !== undefined && obj2[key] === undefined) {
       return;
     }
 
     // @ts-ignore only defined on 2
-    if (obj1[key] === undefined && obj2[key] !== undefined) {
-      obj1[key] = obj2[key];
+    if (untypedObj1[key] === undefined && obj2[key] !== undefined) {
+      untypedObj1[key] = untypedObj2[key];
       return;
     }
 
     // defined on both
-    if (typeof obj1[key] !== "object" || typeof obj2[key] !== "object") {
-      obj1[key] = obj2[key];
+    if (
+      typeof untypedObj1[key] !== "object" ||
+      typeof untypedObj2[key] !== "object"
+    ) {
+      untypedObj1[key] = untypedObj2[key];
       return;
     }
 
-    obj1[key] = deepAssign(obj1[key], obj2[key]);
+    untypedObj1[key] = deepAssign(untypedObj1[key], untypedObj2[key]);
   });
 
-  return obj1;
+  return untypedObj1;
 }
 
 export function unset() {
