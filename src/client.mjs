@@ -54,7 +54,11 @@ export function clientConvertFunction(name, func) {
   let bridgedFunction = async function (...args) {
     if (window.navigator.onLine === false) return await this.runLocal(...args);
 
-    if (localRunTime === Infinity || remoteRunTime === Infinity || Math.random() < 1 / RACE_FACTOR) {
+    if (
+      localRunTime === Infinity ||
+      remoteRunTime === Infinity ||
+      Math.random() < 1 / RACE_FACTOR
+    ) {
       return await this.runRace(...args);
     }
 
@@ -69,7 +73,9 @@ export function clientConvertFunction(name, func) {
       remoteRunTime
     );
     if (localRunTime * (bias < 0 ? -bias : 1 / bias) < remoteRunTime) {
-      return await this.runLocalAsync(...args).catch((e) => this.runRemote(...args));
+      return await this.runLocalAsync(...args).catch((e) =>
+        this.runRemote(...args)
+      );
     }
 
     return await this.runRemote(...args).catch((e) => this.runLocal(...args));
@@ -88,12 +94,20 @@ export function clientConvertFunction(name, func) {
     /** @type {PromiseWrappedFunction} */
     runRace: async function (...args) {
       const localPromise = (async () => {
-        const [val, duration] = await performanceWrapperAsync("local", this.runLocal, ...args);
+        const [val, duration] = await performanceWrapperAsync(
+          "local",
+          this.runLocal,
+          ...args
+        );
         localRunTime = duration;
         return [val, "local"];
       })();
       const remotePromise = (async () => {
-        const [val, duration] = await performanceWrapperAsync("local", this.runRemote, ...args);
+        const [val, duration] = await performanceWrapperAsync(
+          "local",
+          this.runRemote,
+          ...args
+        );
         remoteRunTime = duration;
         return [val, "remote"];
       })();
@@ -101,6 +115,13 @@ export function clientConvertFunction(name, func) {
       environment = env;
       console.log(`${env} won the race`);
       return val;
+    },
+    getStats: () => {
+      return {
+        bias: spaceBridgeGlobalOptions.bias,
+        localRunTime,
+        remoteRunTime,
+      };
     },
   };
 

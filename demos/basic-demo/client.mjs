@@ -27,12 +27,18 @@ document.querySelectorAll("input[type='radio']").forEach(
 );
 
 document.querySelector("form").onsubmit = async function getMessage(e) {
+  const output = document.querySelector("output[name='response']");
+
   e.preventDefault();
   if (env === "dynamic") {
-    document.querySelector("output").value = await hello();
+    output.value = await hello();
   } else if (env === "local") {
-    document.querySelector("output").value = await hello.runLocal();
+    output.value = await hello.runLocal();
   } else if (env === "remote") {
-    document.querySelector("output").value = await hello.runRemote();
+    output.value = await hello.runRemote();
   }
+  const { localRunTime, remoteRunTime } = hello.getStats();
+  document.querySelector("output[name='local-run-time']").value = localRunTime;
+  document.querySelector("output[name='remote-run-time']").value =
+    remoteRunTime;
 };

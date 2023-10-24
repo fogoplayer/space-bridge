@@ -85,34 +85,41 @@
 <body>
   <h1>Basic Demo</h1>
   <form>
-    <fieldset>
-      <legend>Choose an execution environment</legend>
-      <label>
-        <input type="radio" name="environment" id="dynamic" value="dynamic" checked>
-        Dynamic
-      </label>
-      <label>
-        <input type="radio" name="environment" id="local" value="local">
-        Local
-      </label>
-      <label>
-        <input type="radio" name="environment" id="remote" value="remote">
-        Remote
-      </label>
-    </fieldset>
-    <fieldset class="bias">
-      <legend>Set a bias</legend>
-      <div class="bias-row">
-        Server
-        <div class="flex-col">
-          <input type="range" name="bias-range" id="bias-range" min="-20" max="20" step=".1">
-          <input type="number" name="bias-text" id="bias-text" min="-20" max="20" step=".1">
+    <section class="inputs">
+      <fieldset>
+        <legend>Choose an execution environment</legend>
+        <label>
+          <input type="radio" name="environment" id="dynamic" value="dynamic" checked>
+          Dynamic
+        </label>
+        <label>
+          <input type="radio" name="environment" id="local" value="local">
+          Local
+        </label>
+        <label>
+          <input type="radio" name="environment" id="remote" value="remote">
+          Remote
+        </label>
+      </fieldset>
+      <fieldset class="bias">
+        <legend>Set a bias</legend>
+        <div class="bias-row">
+          Server
+          <div class="flex-col">
+            <input type="range" name="bias" id="bias-range" min="-20" max="20" step=".1">
+            <input type="number" name="bias" id="bias-text" min="-20" max="20" step=".1">
+          </div>
+          Client
         </div>
-        Client
-      </div>
+      </fieldset>
+      <button>Send request</button>
+    </section>
+    <fieldset>
+      <legend>Results</legend>
+      <output name="response" for="dynamic local remote" id="response"></output>
+      <label>Local Run Time <output name="local-run-time"></output></label>
+      <label>Remote Run Time <output name="remote-run-time"></output></label>
     </fieldset>
-    <button>Send request</button>
-    <output name="response" for="dynamic local remote" id="response"></output>
   </form>
   <h2><code>Library Code</code></h2>
   <iframe src="library.mjs" frameborder="0"></iframe>
