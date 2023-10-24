@@ -41,6 +41,23 @@
       margin-right: 0.5rem;
     }
 
+    .bias-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: stretch;
+    }
+
+    #bias-text {
+      width: fit-content;
+      margin: auto
+    }
+
     button {
       margin-top: 1rem;
     }
@@ -85,10 +102,14 @@
     </fieldset>
     <fieldset class="bias">
       <legend>Set a bias</legend>
-      Server
-      <input type="range" name="bias-range" id="bias-range" min="-20" max="20" step=".1">
-      Client
-      <input type="number" name="bias-text" id="bias-text" min="-20" max="20" step=".1">
+      <div class="bias-row">
+        Server
+        <div class="flex-col">
+          <input type="range" name="bias-range" id="bias-range" min="-20" max="20" step=".1">
+          <input type="number" name="bias-text" id="bias-text" min="-20" max="20" step=".1">
+        </div>
+        Client
+      </div>
     </fieldset>
     <button>Send request</button>
     <output name="response" for="dynamic local remote" id="response"></output>

@@ -15,6 +15,7 @@ const biasChange = function (e) {
 
 biasRange.oninput = biasChange;
 biasVal.oninput = biasChange;
+biasRange.value = -10;
 biasVal.value = -10;
 
 document.querySelectorAll("input[type='radio']").forEach(
