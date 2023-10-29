@@ -49,7 +49,9 @@ export function serverCreateMiddleware(...args) {
   const { prefix, stats } = deepAssign(DEFAULT_SETTINGS, args[args.length - 1]);
   const prefixLen = prefix.length;
 
-  const imports = /** @type {Promise<any>[]} */ (/** @type {unknown} */ (args.slice(-1)));
+  const imports = /** @type {Promise<any>[]} */ (
+    /** @type {unknown} */ (args.slice(-1))
+  );
 
   /**
    * @param {import("express").Request} req
@@ -91,12 +93,17 @@ export function serverCreateMiddleware(...args) {
         // TODO support options?
         const callback = functionMap[name]?.callback;
 
-        if (callback) {
-          res.send({ returnVal: await callback(...args) });
-          return;
-        } else {
+        if (callback === undefined) {
           res.sendStatus(404);
+          return;
         }
+
+        if (typeof callback === "function") {
+          res.send({ returnVal: await callback(...args) });
+        } else {
+          res.send({ returnVal: await callback });
+        }
+        return;
       }
       // TODO GET
       // TODO PUT

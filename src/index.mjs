@@ -29,31 +29,47 @@ const isServer =
  * defined function’s promise resolves, it will resolve to the return value of
  * the function, not another promise.
  *
- * @template {Callable} F
+ * @template {Callable | object | unknown} F
  * @param {string} name a string to allow SpaceBridge to identify this function;
  * must be unique
- * @param {F} func the user-defined function to be wrapped in SpaceBridge logic
+ * @param {F} funcOrModule the user-defined function to be wrapped in SpaceBridge logic
  * @param {Partial<SpaceBridgeOptions>} [options] options specific to this function;
  * when included, will overwrite only specified properties
  *
- * @returns {BridgedFunction<F>} a promise-wrapped function // TODO make this more specific;
+ * @returns { F extends Callable ? BridgedFunction<F> :
+ * F extends Object ? PromiseWrappedModule<F> :
+ * Promise<F>} a promise-wrapped function // TODO make this more specific;
  *
  * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
  */
 export function define(
   name,
-  func,
+  funcOrModule,
   options = { prefix: "spacebridge", stats: true }
 ) {
-  if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
-  functionMap[name] = {
-    // TODO hash the name for some security
-    callback: func,
-    options,
-  };
+  if (typeof funcOrModule === "object") {
+    Object.keys(funcOrModule).forEach((key) => {
+      funcOrModule[key] = define(key, funcOrModule[key]);
+    });
 
-  if (isServer) return serverConvertFunction(name, func);
-  else return clientConvertFunction(name, func);
+    return funcOrModule;
+  } else {
+    if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
+    functionMap[name] = {
+      // TODO hash the name for some security
+      callback: funcOrModule,
+      options,
+    };
+
+    if (typeof funcOrModule === "function") {
+      if (isServer) return serverConvertFunction(name, funcOrModule);
+      else return clientConvertFunction(name, funcOrModule);
+    } else {
+      // values are always constant time and always faster locally, but we need
+      // to support them for `networkFirst` and `lazy`
+      return funcOrModule;
+    }
+  }
 }
 
 /** @type {typeof clientSetOptions} */
