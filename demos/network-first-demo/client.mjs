@@ -1,8 +1,14 @@
-import { lazy, setOptions } from "./src/index.mjs";
+import { networkFirst, setOptions } from "./src/index.mjs";
 // import { hello } from "./library.mjs";
-const [{ hello }, loadStatus] = lazy(() => import("./library.mjs"), {
-  methods: ["hello"],
-});
+const { hello } = networkFirst(
+  (async () => {
+    await sleep(10000); // our tiny demo library loads really fast, so we introduce our own delay
+    return await import("./library.mjs");
+  })(),
+  {
+    methods: ["hello"],
+  }
+);
 
 let env = "dynamic";
 
@@ -29,13 +35,8 @@ document.querySelectorAll("input[type='radio']").forEach(
 );
 
 const libraryStatus = document.querySelector("[name='library-status']");
-libraryStatus.value = "unloaded";
-document.querySelector("button[name='download-button']").onclick =
-  async function () {
-    libraryStatus.value = "loading";
-    await loadStatus();
-    libraryStatus.value = "loaded";
-  };
+libraryStatus.value = "loading";
+sleep(10000).then(() => (libraryStatus.value = "loaded"));
 
 document.querySelector("form").onsubmit = async function getMessage(e) {
   const output = document.querySelector("output[name='response']");
@@ -55,5 +56,5 @@ document.querySelector("form").onsubmit = async function getMessage(e) {
 };
 
 async function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return await new Promise((resolve) => setTimeout(resolve, ms));
 }

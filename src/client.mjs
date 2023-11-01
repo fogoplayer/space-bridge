@@ -153,38 +153,42 @@ export function clientNetworkFirst(modulePromise, { methods, members }) {
   const promisedModule = {};
 
   // methods
-  for (const method of methods) {
-    const isSchema = !(typeof method === "string");
-    /** @type {keyof M} */
-    const methodName = isSchema ? method?.name : method;
-    const methodArgs = isSchema ? method?.args.map((arg) => arg.name) : [];
+  if (methods) {
+    for (const method of methods) {
+      const isSchema = !(typeof method === "string");
+      /** @type {keyof M} */
+      const methodName = isSchema ? method?.name : method;
+      const methodArgs = isSchema ? method?.args.map((arg) => arg.name) : [];
 
-    promisedModule[methodName] = clientConvertFunction(
-      methodName,
-      /** @type {(...args: any[]) => Promise<any>} */
-      (
-        async function (...args) {
-          if (await isSettled(modulePromise)) {
-            const module = await modulePromise;
-            return await module[methodName](...args);
+      promisedModule[methodName] = clientConvertFunction(
+        methodName,
+        /** @type {(...args: any[]) => Promise<any>} */
+        (
+          async function (...args) {
+            if (await isSettled(modulePromise)) {
+              const module = await modulePromise;
+              return await module[methodName](...args);
+            }
+
+            return executeFunctionRemotely(methodName, ...args);
           }
-
-          return executeFunctionRemotely(methodName, ...args);
-        }
-      )
-    );
+        )
+      );
+    }
   }
 
   // members
-  for (const member of members) {
-    const isSchema = !(typeof member === "string");
-    /** @type {keyof M} */
-    const memberName = isSchema ? member?.name : member;
+  if (members) {
+    for (const member of members) {
+      const isSchema = !(typeof member === "string");
+      /** @type {keyof M} */
+      const memberName = isSchema ? member?.name : member;
 
-    promisedModule[memberName] = new Promise(async (res, rej) => {
-      const module = await modulePromise; // TODO find a way to fetch values over API too
-      res(module[memberName]);
-    });
+      promisedModule[memberName] = new Promise(async (res, rej) => {
+        const module = await modulePromise; // TODO find a way to fetch values over API too
+        res(module[memberName]);
+      });
+    }
   }
   return promisedModule;
 }
