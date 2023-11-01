@@ -112,13 +112,20 @@
           Client
         </div>
       </fieldset>
+      <button type="button" name="download-button">Download library</button>
       <button>Send request</button>
     </section>
     <fieldset>
       <legend>Results</legend>
       <output name="response" for="dynamic local remote" id="response"></output>
-      <label>Local Run Time <output name="local-run-time"></output></label>
+      <label>
+        <details>
+          <summary>"Local" Run Time</summary>
+          Until the library is loaded, "local" execution is still remote
+        </details> <output name="local-run-time"></output>
+      </label>
       <label>Remote Run Time <output name="remote-run-time"></output></label>
+      <label>Library Status <output name="library-status" value="unloaded"></output></label>
     </fieldset>
   </form>
   <h2><code>Library Code</code></h2>

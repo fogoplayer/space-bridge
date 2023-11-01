@@ -1,5 +1,8 @@
-import { setOptions } from "./src/index.mjs";
-import { hello } from "./library.mjs";
+import { lazy, setOptions } from "./src/index.mjs";
+// import { hello } from "./library.mjs";
+const [{ hello }, loadStatus] = lazy(() => import("./library.mjs"), {
+  methods: ["hello"],
+});
 
 let env = "dynamic";
 
@@ -14,8 +17,8 @@ const biasChange = function (e) {
 
 biasRange.oninput = biasChange;
 biasVal.oninput = biasChange;
-biasRange.value = -10;
-biasVal.value = -10;
+biasRange.value = 0;
+biasVal.value = 0;
 
 document.querySelectorAll("input[type='radio']").forEach(
   (el) =>
@@ -24,6 +27,15 @@ document.querySelectorAll("input[type='radio']").forEach(
       env = e.target.value;
     })
 );
+
+const libraryStatus = document.querySelector("[name='library-status']");
+libraryStatus.value = "unloaded";
+document.querySelector("button[name='download-button']").onclick =
+  async function () {
+    libraryStatus.value = "loading";
+    await loadStatus();
+    libraryStatus.value = "loaded";
+  };
 
 document.querySelector("form").onsubmit = async function getMessage(e) {
   const output = document.querySelector("output[name='response']");
@@ -41,3 +53,7 @@ document.querySelector("form").onsubmit = async function getMessage(e) {
   document.querySelector("output[name='remote-run-time']").value =
     remoteRunTime;
 };
+
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
