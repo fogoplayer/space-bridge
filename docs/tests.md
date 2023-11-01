@@ -17,6 +17,7 @@
 
 ### networkFirst
 * During loading, requests are routed through the API
+* During loading, calls to runLocal do what?
 * After loading, requests can be routed through the API
 * After loading, requests can be handled locally
 * The returned module object matches the signature passed in
@@ -30,6 +31,7 @@
 * Calling the trigger function starts the download
 * Before loading, requests are routed through the API
 * During loading, requests are routed through the API
+* During loading, calls to runLocal do what?
 * After loading, requests can be routed through the API
 * After loading, requests can be handled locally
 * The returned module object matches the signature passed in

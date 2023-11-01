@@ -19,7 +19,7 @@ const sum = await add(1, 3);
 console.log(sum); // 4
 ```
 
-Asynchronous methods passed into `define` get awaited, meaning that when the defined function's promise resolves, it will resolve to the return value of the function, not another promise.
+Asynchronous methods passed into `define` get `await`ed, meaning that when the defined function's promise resolves, it will resolve to the return value of the function, not another promise.
 
 Because SpaceBridge's API uses the function name to connect functionality on the client and on the server, `define` checks that each function passed in has a unique name
 
