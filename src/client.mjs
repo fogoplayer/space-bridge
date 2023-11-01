@@ -159,18 +159,20 @@ export function clientNetworkFirst(modulePromise, { methods, members }) {
     const methodName = isSchema ? method?.name : method;
     const methodArgs = isSchema ? method?.args.map((arg) => arg.name) : [];
 
-    promisedModule[methodName] =
+    promisedModule[methodName] = clientConvertFunction(
+      methodName,
       /** @type {(...args: any[]) => Promise<any>} */
       (
         async function (...args) {
           if (await isSettled(modulePromise)) {
             const module = await modulePromise;
-            return await module[methodName](...args); // TODO use define, race import against API call
+            return await module[methodName](...args);
           }
 
           return executeFunctionRemotely(methodName, ...args);
         }
-      );
+      )
+    );
   }
 
   // members

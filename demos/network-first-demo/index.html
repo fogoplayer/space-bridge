@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Bridge | Basic Demo</title>
+
+  <script type="module" src="client.mjs"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1em;
+      margin: 0 auto;
+      max-width: fit-content;
+    }
+
+    fieldset {
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    legend {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="radio"] {
+      margin-right: 0.5rem;
+    }
+
+    .bias-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+    }
+
+    .flex-col {
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: stretch;
+    }
+
+    #bias-text {
+      width: fit-content;
+      margin: auto
+    }
+
+    button {
+      margin-top: 1rem;
+    }
+
+    output {
+      display: block;
+      padding: 0.5rem;
+      border: 1px solid #cccccc;
+      font-family: monospace;
+    }
+
+    h2 {
+      margin-bottom: 0;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      resize: vertical;
+      height: 21em;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Basic Demo</h1>
+  <form>
+    <section class="inputs">
+      <fieldset>
+        <legend>Choose an execution environment</legend>
+        <label>
+          <input type="radio" name="environment" id="dynamic" value="dynamic" checked>
+          Dynamic
+        </label>
+        <label>
+          <input type="radio" name="environment" id="local" value="local">
+          Local
+        </label>
+        <label>
+          <input type="radio" name="environment" id="remote" value="remote">
+          Remote
+        </label>
+      </fieldset>
+      <fieldset class="bias">
+        <legend>Set a bias</legend>
+        <div class="bias-row">
+          Server
+          <div class="flex-col">
+            <input type="range" name="bias" id="bias-range" min="-20" max="20" step=".1">
+            <input type="number" name="bias" id="bias-text" min="-20" max="20" step=".1">
+          </div>
+          Client
+        </div>
+      </fieldset>
+      <button type="button" name="download-button">Download library</button>
+      <button>Send request</button>
+    </section>
+    <fieldset>
+      <legend>Results</legend>
+      <output name="response" for="dynamic local remote" id="response"></output>
+      <label>
+        <details>
+          <summary>"Local" Run Time</summary>
+          Until the library is loaded, "local" execution is still remote
+        </details> <output name="local-run-time"></output>
+      </label>
+      <label>Remote Run Time <output name="remote-run-time"></output></label>
+      <label>Library Status <output name="library-status" value="unloaded"></output></label>
+    </fieldset>
+  </form>
+  <h2><code>Library Code</code></h2>
+  <iframe src="library.mjs" frameborder="0"></iframe>
+  <h2><code>Client Code</code></h2>
+  <iframe src="client.mjs" frameborder="0"></iframe>
+  <h2><code>Server Code</code></h2>
+  <iframe src="server.mjs" frameborder="0"></iframe>
+</body>
+
+</html>
