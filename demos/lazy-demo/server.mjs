@@ -5,7 +5,7 @@ import "./library.mjs";
 import bodyParser from "body-parser";
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(bodyParser.json()); // TODO eliminate this peer dependency
 // (depend on it from the module or preferably make my own)
