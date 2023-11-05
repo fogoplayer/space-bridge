@@ -1,3 +1,6 @@
+import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js";
+// import "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/+esm";
+
 // FGSM configuration; these values are cherry-picked
 // (FGSM is the not strongest attack, and the selected flower mostly
 //  turns into a vase, no matter what targetClass was selected)
@@ -51,7 +54,7 @@ function targetedFGSM(model, originalImage, targetClass, epsilon) {
 
 // this function is called when the "Go!" button is clicked
 // any function that "awaits" asynchronous functions, must itself be marked as async
-async function runAttack() {
+export async function runAttack() {
   // if this is the first time the button was clicked, we need to load the model
   if (model === null) model = await mobilenet.load();
 
