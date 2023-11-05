@@ -1,132 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Space Bridge | Basic Demo</title>
+  <title>Generating adversarial images in the browser with tensorflow.js -- demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0" type="text/javascript"></script>
 
-  <script type="module" src="client.mjs"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-    }
-
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1em;
-      margin: 0 auto;
-      max-width: fit-content;
-    }
-
-    fieldset {
-      border: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    legend {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-
-    input[type="radio"] {
-      margin-right: 0.5rem;
-    }
-
-    .bias-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-    }
-
-    .flex-col {
-      display: flex;
-      flex-flow: column nowrap;
-      align-items: stretch;
-    }
-
-    #bias-text {
-      width: fit-content;
-      margin: auto
-    }
-
-    button {
-      margin-top: 1rem;
-    }
-
-    output {
-      display: block;
-      padding: 0.5rem;
-      border: 1px solid #cccccc;
-      font-family: monospace;
-    }
-
-    h2 {
-      margin-bottom: 0;
-    }
-
-    iframe {
-      display: block;
-      width: 100%;
-      resize: vertical;
-      height: 21em;
-    }
-  </style>
+  <script src="attack.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <h1>Basic Demo</h1>
-  <form>
-    <section class="inputs">
-      <fieldset>
-        <legend>Choose an execution environment</legend>
-        <label>
-          <input type="radio" name="environment" id="dynamic" value="dynamic" checked>
-          Dynamic
-        </label>
-        <label>
-          <input type="radio" name="environment" id="local" value="local">
-          Local
-        </label>
-        <label>
-          <input type="radio" name="environment" id="remote" value="remote">
-          Remote
-        </label>
-      </fieldset>
-      <fieldset class="bias">
-        <legend>Set a bias</legend>
-        <div class="bias-row">
-          Server
-          <div class="flex-col">
-            <input type="range" name="bias" id="bias-range" min="-20" max="20" step=".1">
-            <input type="number" name="bias" id="bias-text" min="-20" max="20" step=".1">
-          </div>
-          Client
-        </div>
-      </fieldset>
-      <button>Send request</button>
-    </section>
-    <fieldset>
-      <legend>Results</legend>
-      <output name="response" for="dynamic local remote" id="response"></output>
-      <label>Local Run Time <output name="local-run-time"></output></label>
-      <label>Remote Run Time <output name="remote-run-time"></output></label>
-    </fieldset>
-  </form>
-  <h2><code>Library Code</code></h2>
-  <iframe src="library.mjs" frameborder="0"></iframe>
-  <h2><code>Client Code</code></h2>
-  <iframe src="client.mjs" frameborder="0"></iframe>
-  <h2><code>Server Code</code></h2>
-  <iframe src="server.mjs" frameborder="0"></iframe>
+  <div id="container">
+    <div class="column">
+      <div> Original </div>
+      <img src="images/flower.jpeg" width="224" id="original-image" alt="Picture of a flower" />
+      <div id="original-text">&nbsp;</div>
+    </div>
+
+    <div class="column">
+      <div> Adversarial </div>
+      <canvas width="224" height="224" id="adversarial-image"></canvas>
+      <div id="adversarial-text">&nbsp;</div>
+    </div>
+  </div>
+  <input id="start-attack" type="button" value="Go!" onclick="run()" />
+
+  <script>
+    function run() {
+      const button = document.getElementById("start-attack");
+      button.disabled = true;
+      button.value = "running...";
+
+      runAttack().then(() => button.value = "done :-)").catch(() => button.value = "failed :-(")
+    }
+  </script>
 </body>
 
 </html>
