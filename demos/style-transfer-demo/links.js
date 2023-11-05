@@ -5113,5 +5113,5 @@ export default [
   "https://uploads8.wikiart.org/images/yves-klein/untitled-yellow-pink-monochrome-1955.jpg",
   "https://uploads8.wikiart.org/the-dinner(1).jpg",
   "https://uploads8.wikiart.org/untitled-1941(2).jpg",
-  "https://uploads8.wikiart.org/untitled-1941(3).jpg"
-]
+  "https://uploads8.wikiart.org/untitled-1941(3).jpg",
+];
