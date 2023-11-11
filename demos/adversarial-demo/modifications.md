@@ -5,3 +5,4 @@ This demo is a modification of (adversarial-tensorflowjs)[https://github.com/kra
 Modifications include:
 
 - Converting to ESM modules
+- Await defined method
