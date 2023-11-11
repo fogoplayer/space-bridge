@@ -4,8 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Generating adversarial images in the browser with tensorflow.js -- demo</title>
-  <script defer src="main.js" type="module"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "space-bridge": "./src/index.mjs"
+      }
+    }
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js"
+    type="text/javascript"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0" type="text/javascript"></script>
+  <script defer src="main.js" type="module"></script>
   <link rel="stylesheet" href="layout.css">
   <link rel="stylesheet" href="style.css">
 </head>

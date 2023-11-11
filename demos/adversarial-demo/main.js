@@ -1,4 +1,4 @@
-import { runAttack } from "./attack.js";
+import { runAttack } from "./attack.mjs";
 
 const button = document.querySelector("#start-attack");
 button.addEventListener("click", run);
