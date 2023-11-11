@@ -18,7 +18,6 @@ const targetClass = 883; // class ID for vase
 const epsilon = 5.0; // strength of the perturbation
 
 let model = null;
-
 function formatPrediction(prediction) {
   const roundedProbability =
     Math.round(prediction["probability"] * 100.0) / 100.0;
