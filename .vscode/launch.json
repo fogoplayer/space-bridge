@@ -15,9 +15,16 @@
       "name": "Start basic demo server",
       "request": "launch",
       "type": "node-terminal"
-    },{
+    },
+    {
       "command": "npm run start --prefix demos/adversarial-demo",
       "name": "Start adversarial demo server",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "${workspaceFolder}/node_modules/.bin/jsdoc ./src/index.mjs",
+      "name": "Generate documentation",
       "request": "launch",
       "type": "node-terminal"
     }
