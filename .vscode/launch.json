@@ -12,7 +12,12 @@
     },
     {
       "command": "npm run start --prefix demos/basic-demo",
-      "name": "Start demo server",
+      "name": "Start basic demo server",
+      "request": "launch",
+      "type": "node-terminal"
+    },{
+      "command": "npm run start --prefix demos/adversarial-demo",
+      "name": "Start adversarial demo server",
       "request": "launch",
       "type": "node-terminal"
     }

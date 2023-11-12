@@ -2,7 +2,7 @@ import express from "express";
 import { spacebridge } from "space-bridge";
 import path from "path";
 import bodyParser from "body-parser";
-
+import "./attack.mjs";
 const app = express();
 const port = 3000;
 

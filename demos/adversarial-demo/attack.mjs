@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
 if (!mobilenet) {
   console.log("Using relative imports");
   mobilenet = await import("@tensorflow-models/mobilenet");
-  tf = await import("@tensorflow/tfjs");
+  tf = await import("@tensorflow/tfjs-node");
 }
 
 const targetClass = 883; // class ID for vase
@@ -24,7 +24,14 @@ function formatPrediction(prediction) {
   return prediction["className"] + " (" + roundedProbability + ")";
 }
 
-export const runModel = /* define("runModel", */ async (originalTensor) => {
+export const runModel = define("runModel", async (originalTensor) => {
+  if (!(originalTensor instanceof tf.Tensor)) {
+    const { shape, dtype, dataId, id } = originalTensor;
+    debugger;
+    const newTensor = tf.Tensor(shape, dtype, dataId, id);
+    originalTensor = Object.assign((newTensor, originalTensor));
+  }
+
   function loss(image) {
     let targetOneHot = tf.oneHot([targetClass], 1000);
     let logits = model.infer(image);
@@ -43,7 +50,7 @@ export const runModel = /* define("runModel", */ async (originalTensor) => {
 
     return adversarial;
   });
-}; /* ) */
+});
 
 export async function runAttack() {
   const originalElement = document.getElementById("original-image");
@@ -58,7 +65,8 @@ export async function runAttack() {
   const originalPredictions = await model.classify(originalElement);
   originalTextElement.innerHTML = formatPrediction(originalPredictions[0]);
   const originalTensor = tf.browser.fromPixels(originalElement);
-  const adversarialTensor = await runModel(originalTensor); // -------------
+  // const adversarialTensor = await runModel.runRemotely(originalTensor); // -------------
+  const adversarialTensor = await runModel.runRemote(originalTensor);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);

@@ -96,9 +96,6 @@ export async function runAttack() {
     targetClass,
     epsilon
   );
-  setTimeout(() => {
-    console.log(targetedFGSM.getStats());
-  }, 10000);
 
   // display the adversarial image on the webpage
   // need to store the normalized tensor into a variable
