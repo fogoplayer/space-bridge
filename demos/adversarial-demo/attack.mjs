@@ -1,4 +1,5 @@
 import { define } from "space-bridge";
+import "./class-transformer/index.js"
 // import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/+esm";
 
