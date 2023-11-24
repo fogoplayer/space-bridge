@@ -26,10 +26,9 @@ function formatPrediction(prediction) {
 
 export const runModel = define("runModel", async (originalTensor) => {
   if (!(originalTensor instanceof tf.Tensor)) {
-    const { shape, dtype, dataId, id } = originalTensor;
-    debugger;
-    const newTensor = tf.Tensor(shape, dtype, dataId, id);
-    originalTensor = Object.assign((newTensor, originalTensor));
+    // const { shape, dtype, dataId, id } = originalTensor;
+    // debugger;
+    originalTensor = Object.setPrototypeOf(originalTensor, tf.Tensor.prototype);
   }
 
   function loss(image) {
@@ -65,8 +64,11 @@ export async function runAttack() {
   const originalPredictions = await model.classify(originalElement);
   originalTextElement.innerHTML = formatPrediction(originalPredictions[0]);
   const originalTensor = tf.browser.fromPixels(originalElement);
-  // const adversarialTensor = await runModel.runRemotely(originalTensor); // -------------
-  const adversarialTensor = await runModel.runRemote(originalTensor);
+
+  // const adversarialTensor = await runModel.runRemote(originalTensor);
+  const adversarialTensor = await runModel.runLocal(
+    JSON.parse(JSON.stringify(originalTensor))
+  );
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
