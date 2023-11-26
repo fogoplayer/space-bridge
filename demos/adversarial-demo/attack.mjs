@@ -1,5 +1,5 @@
 import { define } from "space-bridge";
-import * as ClassTransformer from "./class-transformer.js";
+// import * as ClassTransformer from "./class-transformer.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/+esm";
 
@@ -73,18 +73,11 @@ export async function runAttack() {
     originalElement.height
   );
 
-  const imageWidth = imageData.width;
   const { width, height } = imageData;
-  console.log("Serializing...");
   const serializedImageData = JSON.stringify(imageData);
   let { data } = JSON.parse(serializedImageData);
   data = new Uint8ClampedArray(Object.values(data));
-  console.log(width, height, data);
-
-  console.log("Deserialized. Assigning...");
-  debugger;
   imageData = new ImageData(data, width, height);
-  console.log("Assigned. Running model...");
   const adversarialTensor = await runModel.runLocal(imageData);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
