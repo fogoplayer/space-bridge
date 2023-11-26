@@ -25,8 +25,10 @@ function formatPrediction(prediction) {
   return prediction["className"] + " (" + roundedProbability + ")";
 }
 
-export const runModel = define("runModel", async (originalElement) => {
-  const originalTensor = tf.browser.fromPixels(originalElement);
+export const runModel = define("runModel", async (data, width, height) => {
+  data = new Uint8ClampedArray(Object.values(data));
+  data = new ImageData(data, width, height);
+  const originalTensor = tf.browser.fromPixels(data);
 
   function loss(image) {
     let targetOneHot = tf.oneHot([targetClass], 1000);
@@ -73,12 +75,8 @@ export async function runAttack() {
     originalElement.height
   );
 
-  const { width, height } = imageData;
-  const serializedImageData = JSON.stringify(imageData);
-  let { data } = JSON.parse(serializedImageData);
-  data = new Uint8ClampedArray(Object.values(data));
-  imageData = new ImageData(data, width, height);
-  const adversarialTensor = await runModel.runLocal(imageData);
+  let { width, height, data } = imageData;
+  const adversarialTensor = await runModel.runLocal(data, width, height);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
