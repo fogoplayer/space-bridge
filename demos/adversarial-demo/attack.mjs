@@ -1,5 +1,5 @@
 import { define } from "space-bridge";
-import "./class-transformer/index.js"
+import * as ClassTransformer from "./class-transformer.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/+esm";
 
@@ -25,12 +25,8 @@ function formatPrediction(prediction) {
   return prediction["className"] + " (" + roundedProbability + ")";
 }
 
-export const runModel = define("runModel", async (originalTensor) => {
-  if (!(originalTensor instanceof tf.Tensor)) {
-    // const { shape, dtype, dataId, id } = originalTensor;
-    // debugger;
-    originalTensor = Object.setPrototypeOf(originalTensor, tf.Tensor.prototype);
-  }
+export const runModel = define("runModel", async (originalElement) => {
+  const originalTensor = tf.browser.fromPixels(originalElement);
 
   function loss(image) {
     let targetOneHot = tf.oneHot([targetClass], 1000);
@@ -64,12 +60,32 @@ export async function runAttack() {
 
   const originalPredictions = await model.classify(originalElement);
   originalTextElement.innerHTML = formatPrediction(originalPredictions[0]);
-  const originalTensor = tf.browser.fromPixels(originalElement);
 
-  // const adversarialTensor = await runModel.runRemote(originalTensor);
-  const adversarialTensor = await runModel.runLocal(
-    JSON.parse(JSON.stringify(originalTensor))
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  canvas.width = originalElement.width;
+  canvas.height = originalElement.height;
+  context.drawImage(originalElement, 0, 0);
+  let imageData = context.getImageData(
+    0,
+    0,
+    originalElement.width,
+    originalElement.height
   );
+
+  const imageWidth = imageData.width;
+  const { width, height } = imageData;
+  console.log("Serializing...");
+  const serializedImageData = JSON.stringify(imageData);
+  let { data } = JSON.parse(serializedImageData);
+  data = new Uint8ClampedArray(Object.values(data));
+  console.log(width, height, data);
+
+  console.log("Deserialized. Assigning...");
+  debugger;
+  imageData = new ImageData(data, width, height);
+  console.log("Assigned. Running model...");
+  const adversarialTensor = await runModel.runLocal(imageData);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
@@ -80,7 +96,7 @@ export async function runAttack() {
     adversarialPredictions[0]
   );
 
-  originalTensor.dispose();
+  originalTensor?.dispose();
   adversarialTensor.dispose();
   adversarialTensorNormalized.dispose();
 
