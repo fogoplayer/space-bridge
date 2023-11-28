@@ -34,8 +34,8 @@ export const runModel = define("runModel", async (data, width, height) => {
     data = Buffer.from(data, "base64");
     originalTensor = tf.node.decodeImage(data, 3);
   } else {
-    data = getImageElementFromBase64(data, width, height);
-    console.log(data);
+    // data = getImageElementFromBase64(data, width, height);
+    data = document.querySelector("#original-image");
     originalTensor = tf.browser.fromPixels(data);
   }
 
@@ -116,7 +116,7 @@ function getBase64ImageFromElement(img) {
   ctx.drawImage(img, 0, 0);
   var dataURL = canvas.toDataURL("image/png");
 
-  dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+  dataURL = dataURL.replace(/^data:image\/(png);base64,/, "");
   return dataURL;
 }
 
