@@ -6,7 +6,7 @@ import "./attack.mjs";
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json()); // TODO eliminate this peer dependency
+app.use(express.json({ limit: "100mb" })); // TODO eliminate this peer dependency
 // (depend on it from the module or preferably make my own)
 
 app.use(spacebridge(import("./attack.mjs"), {}));

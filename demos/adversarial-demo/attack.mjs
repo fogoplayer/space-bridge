@@ -26,9 +26,13 @@ function formatPrediction(prediction) {
 }
 
 export const runModel = define("runModel", async (data, width, height) => {
-  data = new Uint8ClampedArray(Object.values(data));
-  data = new ImageData(data, width, height);
-  const originalTensor = tf.browser.fromPixels(data);
+  // data = new Uint8ClampedArray(Object.values(data));
+  // data = new ImageData(data, width, height);
+  // const originalTensor = tf.browser.fromPixels(data);
+  data = Buffer.from(data, "base64");
+  const originalTensor = tf.node.decodeImage(data, 3);
+
+  if (model === null) model = await mobilenet.load();
 
   function loss(image) {
     let targetOneHot = tf.oneHot([targetClass], 1000);
@@ -76,7 +80,8 @@ export async function runAttack() {
   );
 
   let { width, height, data } = imageData;
-  const adversarialTensor = await runModel.runLocal(data, width, height);
+  const base64Data = getBase64Image(originalElement);
+  const adversarialTensor = await runModel.runRemote(base64Data, width, height);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
@@ -93,4 +98,17 @@ export async function runAttack() {
 
   const leakingMemory = tf.memory().numBytes - initialMemoryUsage;
   console.log("Memory leakage: " + leakingMemory + " bytes");
+}
+
+function getBase64Image(img) {
+  var canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  var ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  var dataURL = canvas.toDataURL("image/png");
+
+  dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+  return dataURL;
 }
