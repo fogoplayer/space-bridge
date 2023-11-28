@@ -3,6 +3,9 @@ import { define } from "space-bridge";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js";
 // import "https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/+esm";
 
+const isServer =
+  typeof process !== "undefined" || typeof window === "undefined";
+
 let mobilenet;
 let tf;
 if (typeof window !== "undefined") {
@@ -26,11 +29,15 @@ function formatPrediction(prediction) {
 }
 
 export const runModel = define("runModel", async (data, width, height) => {
-  // data = new Uint8ClampedArray(Object.values(data));
-  // data = new ImageData(data, width, height);
-  // const originalTensor = tf.browser.fromPixels(data);
-  data = Buffer.from(data, "base64");
-  const originalTensor = tf.node.decodeImage(data, 3);
+  let originalTensor;
+  if (isServer) {
+    data = Buffer.from(data, "base64");
+    originalTensor = tf.node.decodeImage(data, 3);
+  } else {
+    data = getImageElementFromBase64(data, width, height);
+    console.log(data);
+    originalTensor = tf.browser.fromPixels(data);
+  }
 
   if (model === null) model = await mobilenet.load();
 
@@ -80,8 +87,8 @@ export async function runAttack() {
   );
 
   let { width, height, data } = imageData;
-  const base64Data = getBase64Image(originalElement);
-  const adversarialTensor = await runModel.runRemote(base64Data, width, height);
+  const base64Data = getBase64ImageFromElement(originalElement);
+  const adversarialTensor = await runModel.runLocal(base64Data, width, height);
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
   tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
@@ -100,7 +107,7 @@ export async function runAttack() {
   console.log("Memory leakage: " + leakingMemory + " bytes");
 }
 
-function getBase64Image(img) {
+function getBase64ImageFromElement(img) {
   var canvas = document.createElement("canvas");
   canvas.width = img.width;
   canvas.height = img.height;
@@ -111,4 +118,12 @@ function getBase64Image(img) {
 
   dataURL = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
   return dataURL;
+}
+
+function getImageElementFromBase64(base64String, width, height) {
+  var image = new Image();
+  image.src = "data:image/png;base64," + base64String;
+  image.width = width;
+  image.height = height;
+  return image;
 }
