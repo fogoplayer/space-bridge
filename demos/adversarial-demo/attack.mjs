@@ -49,7 +49,7 @@ export const runModel = define("runModel", async (data, width, height) => {
 
   const calculateGradient = tf.grad(loss);
 
-  return await tf.tidy(() => {
+  const adversarialTensor = await tf.tidy(() => {
     const gradient = calculateGradient(originalTensor);
 
     const perturbation = gradient.sign().mul(epsilon);
@@ -59,6 +59,18 @@ export const runModel = define("runModel", async (data, width, height) => {
 
     return adversarial;
   });
+
+  const adversarialTensorNormalized = adversarialTensor.div(255);
+  const adversarialElement = document.createElement("canvas");
+  tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
+
+  const adversarialPredictions = await model.classify(adversarialTensor);
+
+  originalTensor.dispose();
+  adversarialTensor.dispose();
+  adversarialTensorNormalized.dispose();
+
+  return [adversarialElement, adversarialPredictions[0]];
 });
 
 export async function runAttack() {
@@ -88,20 +100,16 @@ export async function runAttack() {
 
   let { width, height, data } = imageData;
   const base64Data = getBase64ImageFromElement(originalElement);
-  const adversarialTensor = await runModel.runLocal(base64Data, width, height);
-
-  const adversarialTensorNormalized = adversarialTensor.div(255);
-  tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
-
-  const adversarialPredictions = await model.classify(adversarialTensor);
-
-  adversarialTextElement.innerHTML = formatPrediction(
-    adversarialPredictions[0]
+  /////////////////////////////////////////////////////////////////////////////
+  const [adversarialImage, prediction] = await runModel.runLocal(
+    base64Data,
+    width,
+    height
   );
+  /////////////////////////////////////////////////////////////////////////////
 
-  originalTensor?.dispose();
-  adversarialTensor.dispose();
-  adversarialTensorNormalized.dispose();
+  adversarialElement.replaceWith(adversarialImage);
+  adversarialTextElement.innerHTML = formatPrediction(prediction);
 
   const leakingMemory = tf.memory().numBytes - initialMemoryUsage;
   console.log("Memory leakage: " + leakingMemory + " bytes");
