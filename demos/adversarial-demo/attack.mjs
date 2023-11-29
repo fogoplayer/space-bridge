@@ -61,8 +61,20 @@ export const runModel = define("runModel", async (data, width, height) => {
   });
 
   const adversarialTensorNormalized = adversarialTensor.div(255);
-  const adversarialElement = document.createElement("canvas");
-  tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
+  let adversarialImageData;
+  if (isServer) {
+    const imageData = tf.node.encodePng(adversarialTensorNormalized);
+    var decoder = new TextDecoder("utf8");
+    adversarialImageData = btoa(decoder.decode(imageData));
+  } else {
+    const adversarialElement = document.createElement("canvas");
+    window.adversarialElement = adversarialElement;
+    await tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
+    let dataURL = adversarialElement.toDataURL("image/png");
+
+    dataURL = dataURL.replace(/^data:image\/(png);base64,/, "");
+    adversarialImageData = dataURL;
+  }
 
   const adversarialPredictions = await model.classify(adversarialTensor);
 
@@ -70,7 +82,7 @@ export const runModel = define("runModel", async (data, width, height) => {
   adversarialTensor.dispose();
   adversarialTensorNormalized.dispose();
 
-  return [adversarialElement, adversarialPredictions[0]];
+  return [adversarialImageData, adversarialPredictions[0], adversarialElement];
 });
 
 export async function runAttack() {
@@ -101,13 +113,17 @@ export async function runAttack() {
   let { width, height, data } = imageData;
   const base64Data = getBase64ImageFromElement(originalElement);
   /////////////////////////////////////////////////////////////////////////////
-  const [adversarialImage, prediction] = await runModel.runLocal(
+  const [adversarialImageData, prediction, el] = await runModel.runLocal(
     base64Data,
     width,
     height
   );
   /////////////////////////////////////////////////////////////////////////////
-
+  const adversarialImage = getImageElementFromBase64(
+    adversarialImageData,
+    width,
+    height
+  );
   adversarialElement.replaceWith(adversarialImage);
   adversarialTextElement.innerHTML = formatPrediction(prediction);
 
