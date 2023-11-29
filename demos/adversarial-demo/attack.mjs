@@ -63,17 +63,20 @@ export const runModel = define("runModel", async (data, width, height) => {
   const adversarialTensorNormalized = adversarialTensor.div(255);
   let adversarialImageData;
   if (isServer) {
-    const imageData = tf.node.encodePng(adversarialTensorNormalized);
-    var decoder = new TextDecoder("utf8");
-    adversarialImageData = btoa(decoder.decode(imageData));
+    const imageData = await tf.node.encodePng(adversarialTensor);
+    adversarialImageData = Buffer.from(imageData).toString("base64");
+    adversarialImageData = adversarialImageData.replace(
+      /^data:image\/(png);base64,/,
+      ""
+    );
   } else {
     const adversarialElement = document.createElement("canvas");
-    window.adversarialElement = adversarialElement;
     await tf.browser.toPixels(adversarialTensorNormalized, adversarialElement);
-    let dataURL = adversarialElement.toDataURL("image/png");
-
-    dataURL = dataURL.replace(/^data:image\/(png);base64,/, "");
-    adversarialImageData = dataURL;
+    adversarialImageData = adversarialElement.toDataURL("image/png");
+    adversarialImageData = adversarialImageData.replace(
+      /^data:image\/(png);base64,/,
+      ""
+    );
   }
 
   const adversarialPredictions = await model.classify(adversarialTensor);
@@ -82,7 +85,7 @@ export const runModel = define("runModel", async (data, width, height) => {
   adversarialTensor.dispose();
   adversarialTensorNormalized.dispose();
 
-  return [adversarialImageData, adversarialPredictions[0], adversarialElement];
+  return [adversarialImageData, adversarialPredictions[0]];
 });
 
 export async function runAttack() {
@@ -113,7 +116,7 @@ export async function runAttack() {
   let { width, height, data } = imageData;
   const base64Data = getBase64ImageFromElement(originalElement);
   /////////////////////////////////////////////////////////////////////////////
-  const [adversarialImageData, prediction, el] = await runModel.runLocal(
+  const [adversarialImageData, prediction] = await runModel.runLocal(
     base64Data,
     width,
     height
