@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: index.mjs</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: index.mjs</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import SpaceBridgeEnvironmentError from "./SpaceBridgeClientOnlyError.mjs";
+import SpaceBridgeCollisionError from "./SpaceBridgeCollisionError.mjs";
+import {
+  clientConvertFunction,
+  clientLazy,
+  clientNetworkFirst,
+  clientQueue,
+  clientSetOptions,
+} from "./client.mjs";
+import { functionMap } from "./internals.mjs";
+export { unset } from "./internals.mjs";
+import { serverCreateMiddleware, serverConvertFunction } from "./server.mjs";
+
+// if we do have process or don't have a window
+const isServer =
+  typeof process !== "undefined" || typeof window === "undefined";
+
+/**
+ * A higher-order function that wraps function definitions to use SpaceBridge
+ * logic.
+ *
+ * It is isomorphic, so you can use define in libraries pre-export and the
+ * correct logic will be loaded in each environment.
+ *
+ * It returns a function that returns a promise, and that promise resolves to
+ * the return value of your function.
+ *
+ * Asynchronous methods passed into define get awaited, meaning that when the
+ * defined function’s promise resolves, it will resolve to the return value of
+ * the function, not another promise.
+ *
+ * @template {Callable | object | unknown} F
+ * @param {string} name a string to allow SpaceBridge to identify this function;
+ * must be unique
+ * @param {F} funcOrModule the user-defined function to be wrapped in SpaceBridge logic
+ * @param {Partial&lt;SpaceBridgeOptions>} [options] options specific to this function;
+ * when included, will overwrite only specified properties
+ *
+ * @returns { F extends Callable ? BridgedFunction&lt;F> :
+ * F extends Object ? PromiseWrappedModule&lt;F> :
+ * Promise&lt;F>} a promise-wrapped function // TODO make this more specific;
+ *
+ * @throws {SpaceBridgeCollisionError} if a function with the same name has already been registered
+ */
+export function define(
+  name,
+  funcOrModule,
+  options = { prefix: "spacebridge", stats: true }
+) {
+  if (typeof funcOrModule === "object") {
+    Object.keys(funcOrModule).forEach((key) => {
+      funcOrModule[key] = define(key, funcOrModule[key]);
+    });
+
+    return funcOrModule;
+  } else {
+    if (functionMap[name]) throw new SpaceBridgeCollisionError(name);
+    functionMap[name] = {
+      // TODO hash the name for some security
+      callback: funcOrModule,
+      options,
+    };
+
+    if (typeof funcOrModule === "function") {
+      if (isServer) return serverConvertFunction(name, funcOrModule);
+      else return clientConvertFunction(name, funcOrModule);
+    } else {
+      // values are always constant time and always faster locally, but we need
+      // to support them for `networkFirst` and `lazy`
+      return funcOrModule;
+    }
+  }
+}
+
+/** @type {typeof clientSetOptions} */
+export function setOptions(options) {
+  if (isServer) throw new SpaceBridgeEnvironmentError();
+  clientSetOptions(options);
+}
+
+/** @type {typeof clientNetworkFirst} */
+export function networkFirst(modulePromise, { methods, members }) {
+  if (isServer) throw new SpaceBridgeEnvironmentError();
+  return clientNetworkFirst(modulePromise, { methods, members });
+}
+
+/** @type {typeof clientLazy} */
+export function lazy(fetchModule, { methods, members }) {
+  if (isServer) throw new SpaceBridgeEnvironmentError();
+  return clientLazy(fetchModule, { methods, members });
+}
+
+/** @type {typeof clientQueue} */
+export function queue(input, init = undefined) {
+  if (isServer) throw new SpaceBridgeEnvironmentError();
+  return clientQueue(input, init);
+}
+
+/** @type {serverCreateMiddleware} */
+export function spacebridge(args) {
+  if (isServer) return serverCreateMiddleware(args);
+  throw new SpaceBridgeEnvironmentError();
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEFAULT_SETTINGS">DEFAULT_SETTINGS</a></li><li><a href="global.html#clientConvertFunction">clientConvertFunction</a></li><li><a href="global.html#clientLazy">clientLazy</a></li><li><a href="global.html#clientNetworkFirst">clientNetworkFirst</a></li><li><a href="global.html#clientQueue">clientQueue</a></li><li><a href="global.html#clientSetOptions">clientSetOptions</a></li><li><a href="global.html#createSignal">createSignal</a></li><li><a href="global.html#deepAssign">deepAssign</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#executeFunctionRemotely">executeFunctionRemotely</a></li><li><a href="global.html#functionMap">functionMap</a></li><li><a href="global.html#isSettled">isSettled</a></li><li><a href="global.html#lazy">lazy</a></li><li><a href="global.html#networkFirst">networkFirst</a></li><li><a href="global.html#performanceWrapperAsync">performanceWrapperAsync</a></li><li><a href="global.html#performanceWrapperSync">performanceWrapperSync</a></li><li><a href="global.html#queue">queue</a></li><li><a href="global.html#serverConvertFunction">serverConvertFunction</a></li><li><a href="global.html#serverCreateMiddleware">serverCreateMiddleware</a></li><li><a href="global.html#setOptions">setOptions</a></li><li><a href="global.html#spaceBridgeGlobalOptions">spaceBridgeGlobalOptions</a></li><li><a href="global.html#spacebridge">spacebridge</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Nov 11 2023 22:14:53 GMT-0700 (Mountain Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

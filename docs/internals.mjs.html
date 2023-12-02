@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: internals.mjs</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: internals.mjs</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @type {{
+ *  [key: string]: {
+ *    callback: Function
+ *    options?: Partial&lt;SpaceBridgeOptions> | DefineOptions
+ *  }
+ * }}
+ */
+export let functionMap = {};
+
+/** @type {InitOptions} */
+export let spaceBridgeGlobalOptions = {
+  baseUrl: "/",
+  prefix: "spacebridge",
+  body: {},
+  headers: {},
+  bias: 1,
+};
+
+/**
+ * Executes the named function remotely
+ * // TODO pass in function instead of name, use generics?
+ * // TODO handle errors
+ * // TODO handle leading/trailing slashes in baseURL and prefix
+ *
+ * @param {string} name
+ * @param  {...any} args
+ * @returns {Promise&lt;any>}
+ */
+export async function executeFunctionRemotely(name, ...args) {
+  const { baseUrl, prefix, body, headers } = spaceBridgeGlobalOptions;
+
+  const response = await fetch(baseUrl + prefix, {
+    method: "POST",
+    body: JSON.stringify(Object.assign(body || {}, { name, args })),
+    headers: new Headers(
+      Object.assign(headers || {}, {
+        "content-type": "application/json",
+      })
+    ),
+  });
+
+  const { returnVal } = await response.json();
+  return returnVal;
+}
+
+/**
+ * Does a deep assignment onto the options object
+ * @param {Partial&lt;InitOptions>} options
+ * @returns {void}
+ */
+export function setOptions(options) {
+  // TODO don't allow (-1)-(1) bias
+  spaceBridgeGlobalOptions = Object.assign(spaceBridgeGlobalOptions, options); // TODO add deep assignment
+}
+
+/**
+ * Checks if a promise is settled
+ * @param {Promise&lt;unknown>} promise
+ * @returns {Promise&lt;boolean>}
+ */
+export async function isSettled(promise) {
+  // We put `pending` promise after the promise to test,
+  // which forces .race to test `promise` first
+  return await Promise.race([promise, "pending"]).then(
+    (val) => val !== "pending"
+  );
+}
+
+/**
+ * Takes in two objects and does a deep merge between the two
+ *
+ * @template {Object} O1
+ * @template {Object} O2
+ * @param {O1} obj1
+ * @param {O2} obj2
+ * @returns {O1 &amp; O2}
+ */
+export function deepAssign(obj1, obj2) {
+  const obj1Keys = /** @type {[keyof O1]} */ (Object.keys(obj1));
+  const obj2Keys = /** @type {[keyof O2]} */ (Object.keys(obj2));
+  const keySet = new Set([...obj1Keys, ...obj2Keys]);
+
+  const untypedObj1 = /** @type {any} */ (obj1);
+  const untypedObj2 = /** @type {any} */ (obj2);
+
+  keySet.forEach((key) => {
+    // @ts-ignore unset
+    if (obj2[key] === unset()) {
+      delete untypedObj1[key];
+      return;
+    }
+
+    // @ts-ignore only defined on 1
+    if (untypedObj1[key] !== undefined &amp;&amp; obj2[key] === undefined) {
+      return;
+    }
+
+    // @ts-ignore only defined on 2
+    if (untypedObj1[key] === undefined &amp;&amp; obj2[key] !== undefined) {
+      untypedObj1[key] = untypedObj2[key];
+      return;
+    }
+
+    // defined on both
+    if (
+      typeof untypedObj1[key] !== "object" ||
+      typeof untypedObj2[key] !== "object"
+    ) {
+      untypedObj1[key] = untypedObj2[key];
+      return;
+    }
+
+    untypedObj1[key] = deepAssign(untypedObj1[key], untypedObj2[key]);
+  });
+
+  return untypedObj1;
+}
+
+export function unset() {
+  return "SPACEBRIDGE_UNSET";
+}
+
+/**
+ * Wraps a function with performance measurements
+ *
+ * @param {string} name the event name for the performance API
+ * @param {Function} func the function to wrap
+ * @param  {...any} args the arguments to pass to the function
+ * @returns {[any, Number]} the return value of the function and the number of ms it took to run; duration is -1 if performance measurement is not supported
+ */
+export function performanceWrapperSync(name, func, ...args) {
+  if (!window.performance) return [func(...args), -1];
+
+  performance?.mark("started-" + name);
+  const val = func(...args);
+  performance?.mark("finished-" + name);
+  const remoteMeasure = performance?.measure(
+    name + "-duration",
+    "started-" + name,
+    "finished-" + name
+  );
+  console.log("remote duration:", remoteMeasure.duration);
+  return [val, remoteMeasure.duration];
+}
+
+/**
+ * Wraps a function with performance measurements
+ *
+ * @param {string} name the event name for the performance API
+ * @param {Function} func the function to wrap
+ * @param  {...any} args the arguments to pass to the function
+ * @returns {Promise&lt;[any, Number]>} the return value of the function and the number of ms it took to run; duration is -1 if performance measurement is not supported
+ */
+export async function performanceWrapperAsync(name, func, ...args) {
+  // TODO just use a less precise timer if performance is not supported
+  if (!window.performance) return [await func(...args), -1];
+
+  performance?.mark("started-" + name);
+  const val = await func(...args);
+  performance?.mark("finished-" + name);
+  const remoteMeasure = performance?.measure(
+    name + "-duration",
+    "started-" + name,
+    "finished-" + name
+  );
+  console.log("remote duration:", remoteMeasure.duration);
+  return [val, remoteMeasure.duration];
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEFAULT_SETTINGS">DEFAULT_SETTINGS</a></li><li><a href="global.html#clientConvertFunction">clientConvertFunction</a></li><li><a href="global.html#clientLazy">clientLazy</a></li><li><a href="global.html#clientNetworkFirst">clientNetworkFirst</a></li><li><a href="global.html#clientQueue">clientQueue</a></li><li><a href="global.html#clientSetOptions">clientSetOptions</a></li><li><a href="global.html#createSignal">createSignal</a></li><li><a href="global.html#deepAssign">deepAssign</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#executeFunctionRemotely">executeFunctionRemotely</a></li><li><a href="global.html#functionMap">functionMap</a></li><li><a href="global.html#isSettled">isSettled</a></li><li><a href="global.html#lazy">lazy</a></li><li><a href="global.html#networkFirst">networkFirst</a></li><li><a href="global.html#performanceWrapperAsync">performanceWrapperAsync</a></li><li><a href="global.html#performanceWrapperSync">performanceWrapperSync</a></li><li><a href="global.html#queue">queue</a></li><li><a href="global.html#serverConvertFunction">serverConvertFunction</a></li><li><a href="global.html#serverCreateMiddleware">serverCreateMiddleware</a></li><li><a href="global.html#setOptions">setOptions</a></li><li><a href="global.html#spaceBridgeGlobalOptions">spaceBridgeGlobalOptions</a></li><li><a href="global.html#spacebridge">spacebridge</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Nov 11 2023 22:14:53 GMT-0700 (Mountain Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
